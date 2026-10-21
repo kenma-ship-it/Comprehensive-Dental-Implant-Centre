@@ -1,0 +1,530 @@
+/* Hallmark · macrostructure: Narrative Workflow · genre: editorial · tone: technical-but-warm
+ * theme: custom (logo-anchored) · paper light oklch(96.4% 0.002 60) / dark oklch(16.5% 0.006 290) · accent red oklch(55% 0.19 29)
+ * axes: light / grotesk-display / warm-accent · display Bricolage Grotesque + body Public Sans
+ * nav N1b three-section · footer Ft1 mast-headed · enrichment E5 hand-built SVG (badge + stage diagrams)
+ * pre-emit critique: P4 H4 E4 S5 R4 V5
+ */
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens - three layers
+   1. Primitives  : raw values sampled from the clinic logo and signboard
+   2. Semantic    : what a colour is *for* (text, surface, border, primary...)
+   3. Component   : per-component overrides (buttons, chips, slider handle)
+   Tailwind utilities read the primitives via @theme; components read layers 2-3.
+   ========================================================================== */
+
+@theme {
+  /* Light primitives (OKLCH). Brand = the badge's signal red on near-black ink,
+     on the warm off-white the clinic's own pages use. Legacy leaf-/tide- names
+     map onto the red scale so shared components keep working. */
+  --color-paper: oklch(96.4% 0.002 60);
+  --color-surface: oklch(100% 0 0);
+  --color-mint: oklch(93.6% 0.004 60);
+  --color-ice: oklch(96.8% 0.012 32);
+  --color-night: oklch(17.5% 0.006 290);
+  --color-night-2: oklch(22% 0.006 290);
+
+  --color-ink: oklch(19% 0.006 290);
+  --color-ink-soft: oklch(36% 0.006 290);
+  --color-muted: oklch(48% 0.006 290);
+  --color-line: oklch(88% 0.003 60);
+  --color-line-soft: oklch(92.6% 0.002 60);
+  --color-mist: oklch(54% 0.005 290);
+  --color-on-night: oklch(96% 0.002 60);
+  --color-on-night-muted: oklch(78% 0.004 60);
+
+  --color-brand: oklch(55% 0.19 29);
+  --color-brand-strong: oklch(49% 0.19 29);
+  --color-brand-soft: oklch(95.5% 0.025 32);
+  --color-on-brand: oklch(99% 0.002 60);
+
+  --color-leaf-100: oklch(95.5% 0.025 32);
+  --color-leaf-300: oklch(80% 0.11 30);
+  --color-leaf-500: oklch(62% 0.18 30);
+  --color-leaf-600: oklch(55% 0.19 29);
+  --color-leaf-700: oklch(49% 0.19 29);
+  --color-tide-100: oklch(95.5% 0.025 32);
+  --color-tide-300: oklch(80% 0.11 30);
+  --color-tide-500: oklch(62% 0.18 30);
+  --color-tide-700: oklch(49% 0.19 29);
+  --color-tide-800: oklch(44% 0.18 29);
+
+  --color-primary: oklch(55% 0.19 29);
+  --color-accent: oklch(55% 0.19 29);
+  --color-danger: oklch(50% 0.19 27);
+  --color-danger-soft: oklch(95.5% 0.02 27);
+  --color-flag: oklch(95% 0.05 90);
+  --color-flag-ink: oklch(40% 0.08 80);
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-publicsans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-brand: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.5rem;
+  --radius-field: 0.75rem;
+  --shadow-lift: 0 1px 2px oklch(19% 0.006 290 / 0.05), 0 18px 40px -20px oklch(19% 0.006 290 / 0.22);
+  --shadow-panel: 0 1px 0 oklch(19% 0.006 290 / 0.04), 0 34px 64px -32px oklch(19% 0.006 290 / 0.3);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Dark theme - same token names, night-clinic palette.
+   Applied by data-theme="dark" on <html> (set before paint by an inline script).
+   Every text/background pair below was checked for WCAG AA contrast.
+   ========================================================================== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: oklch(16.5% 0.006 290);
+  --color-surface: oklch(21% 0.007 290);
+  --color-mint: oklch(19.5% 0.007 290);
+  --color-ice: oklch(21% 0.012 29);
+  --color-night: oklch(12% 0.005 290);
+  --color-night-2: oklch(15% 0.006 290);
+
+  --color-ink: oklch(96% 0.002 60);
+  --color-ink-soft: oklch(87% 0.003 60);
+  --color-muted: oklch(77% 0.004 60);
+  --color-line: oklch(32% 0.008 290);
+  --color-line-soft: oklch(26% 0.007 290);
+  --color-mist: oklch(62% 0.006 290);
+
+  --color-brand: oklch(72% 0.16 32);
+  --color-brand-strong: oklch(66% 0.18 31);
+  --color-brand-soft: oklch(27% 0.06 30);
+  --color-on-brand: oklch(14% 0.01 30);
+
+  --color-leaf-100: oklch(27% 0.06 30);
+  --color-leaf-300: oklch(58% 0.14 30);
+  --color-leaf-500: oklch(68% 0.17 31);
+  --color-leaf-600: oklch(72% 0.16 32);
+  --color-leaf-700: oklch(66% 0.18 31);
+  --color-tide-100: oklch(27% 0.06 30);
+  --color-tide-300: oklch(58% 0.14 30);
+  --color-tide-500: oklch(68% 0.17 31);
+  --color-tide-700: oklch(66% 0.18 31);
+  --color-tide-800: oklch(74% 0.15 32);
+
+  --color-primary: oklch(72% 0.16 32);
+  --color-accent: oklch(72% 0.16 32);
+  --color-danger: oklch(76% 0.13 27);
+  --color-danger-soft: oklch(27% 0.06 27);
+
+  --logo-ink: oklch(96% 0.002 60);
+  --logo-brand: oklch(70% 0.17 31);
+  --logo-tooth: oklch(21% 0.007 290);
+  --logo-ring: oklch(40% 0.01 290);
+
+  --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.4), 0 18px 40px -20px oklch(0% 0 0 / 0.7);
+  --shadow-panel: 0 1px 0 oklch(0% 0 0 / 0.3), 0 34px 64px -32px oklch(0% 0 0 / 0.8);
+}
+
+/* Smooth theme change. The View Transitions API (see ThemeToggle) handles the
+   circular reveal; this is the fallback for browsers without it. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.45s var(--ease-out-soft),
+    border-color 0.45s var(--ease-out-soft),
+    color 0.45s var(--ease-out-soft),
+    fill 0.45s var(--ease-out-soft) !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root {
+  /* --- 2. Semantic ------------------------------------------------------ */
+  --surface: var(--color-paper);
+  --surface-wash-green: var(--color-mint);
+  --surface-wash-blue: var(--color-ice);
+  --surface-inverse: var(--color-night);
+  --text: var(--color-ink);
+  --text-muted: var(--color-muted);
+  --text-inverse: var(--color-on-night);
+  --text-inverse-muted: var(--color-on-night-muted);
+  --border: var(--color-line);
+  --border-soft: var(--color-line-soft);
+  --primary: var(--color-primary);
+  --primary-strong: var(--color-tide-800);
+  --accent: var(--color-accent);
+  --success: var(--color-ink);
+  --focus-ring: var(--color-brand);
+
+  /* --- 3. Component ----------------------------------------------------- */
+  --btn-primary-bg: var(--color-brand-strong);
+  --btn-primary-fg: var(--color-on-brand);
+  --btn-quiet-border: var(--color-ink);
+  --btn-height: 3rem;
+  --logo-ink: var(--color-ink);
+  --logo-brand: var(--color-brand);
+  --logo-tooth: var(--color-surface);
+  --logo-ring: var(--color-line);
+  --header-height: 4.5rem;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+@layer base {
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--color-leaf-100);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--color-on-night);
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--header-height) + 0.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Layout + type helpers
+   ========================================================================== */
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .section-pad {
+    padding-block: 5rem;
+  }
+  @media (min-width: 1024px) {
+    .section-pad {
+      padding-block: 7.5rem;
+    }
+  }
+
+  /* Rail layout: sticky title on the left, content on the right */
+  .rail {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .rail {
+      grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+      gap: 4.5rem;
+    }
+    .rail > .rail-head {
+      position: sticky;
+      top: calc(var(--header-height) + 2rem);
+      align-self: start;
+    }
+  }
+
+  .h-display {
+    font-size: clamp(2.5rem, 1.6rem + 4.6vw, 5rem);
+    line-height: 1.02;
+    letter-spacing: -0.028em;
+  }
+  .h-section {
+    font-size: clamp(1.9rem, 1.35rem + 2.2vw, 3rem);
+    line-height: 1.08;
+  }
+  .h-card {
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
+    line-height: 1.15;
+  }
+  .lede {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 38rem;
+  }
+  .prose-measure {
+    max-width: 38rem;
+  }
+  .label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--text-muted);
+  }
+  .on-dark .label {
+    color: var(--text-inverse-muted);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Buttons                                                             */
+  /* ------------------------------------------------------------------ */
+  .btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: var(--btn-height);
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    border: 1.5px solid transparent;
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      color 0.25s var(--ease-out-soft),
+      background-color 0.25s var(--ease-out-soft),
+      border-color 0.25s var(--ease-out-soft),
+      box-shadow 0.25s var(--ease-out-soft);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-lg {
+    --btn-height: 3.5rem;
+    padding: 0 1.9rem;
+    font-size: 1rem;
+  }
+  .btn-sm {
+    --btn-height: 2.75rem;
+    padding: 0 1.15rem;
+  }
+
+  .btn-primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-fg);
+  }
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-brand);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-soft);
+  }
+  .btn-primary:hover:not(:disabled)::before,
+  .btn-primary:focus-visible::before {
+    opacity: 1;
+  }
+
+  .btn-quiet {
+    background: transparent;
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--btn-quiet-border) 28%, transparent);
+  }
+  .btn-quiet:hover:not(:disabled) {
+    border-color: var(--btn-quiet-border);
+    background: color-mix(in oklch, var(--color-ink) 5%, transparent);
+  }
+  .on-dark .btn-quiet {
+    color: var(--color-on-night);
+    --btn-quiet-border: var(--color-on-night);
+  }
+  .on-dark .btn-quiet:hover:not(:disabled) {
+    background: color-mix(in oklch, var(--color-on-night) 8%, transparent);
+  }
+
+  .btn-light {
+    background: var(--color-on-night);
+    color: var(--color-night);
+  }
+  .btn-light:hover:not(:disabled) {
+    background: var(--color-on-night-muted);
+  }
+
+  .link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    transition: text-decoration-color 0.2s;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+  .on-dark .link {
+    color: var(--color-on-night);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Form fields                                                          */
+  /* ------------------------------------------------------------------ */
+  .field {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-field);
+    background: var(--color-surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .field::placeholder {
+    color: var(--color-mist);
+  }
+  .field:hover {
+    border-color: var(--color-mist);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-brand) 22%, transparent);
+  }
+  .field[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    background: var(--color-danger-soft);
+  }
+  textarea.field {
+    min-height: 7rem;
+    resize: vertical;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Small flag for placeholder / sample content                          */
+  /* ------------------------------------------------------------------ */
+  .flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: var(--color-flag);
+    color: var(--color-flag-ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .hairline {
+    height: 1px;
+    background: var(--border);
+    border: 0;
+  }
+  .on-dark .hairline {
+    background: color-mix(in oklch, var(--color-on-night) 14%, transparent);
+  }
+}
+
+/* Soft top/bottom fade for the scrolling review wall */
+.fade-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+}
+
+/* Slot + date buttons need a predictable tap target */
+.tap {
+  min-height: 2.75rem;
+}
+
+/* Hide scrollbars on the sample-day strip without removing scroll */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================================================
+   Review marquee
+   ========================================================================== */
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+.marquee-track {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none !important; transform: none !important; }
+}
