@@ -120,9 +120,7 @@ function ReviewCard({ review }: { review: Review }) {
 
 export function Reviews() {
   const [hoverPaused, setHoverPaused] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const reduce = useReducedMotion();
-  const paused = hoverPaused || userPaused;
+  const paused = hoverPaused;
 
   const hasReviews = reviews.length > 0;
   const half = Math.ceil(reviews.length / 2);
@@ -142,17 +140,6 @@ export function Reviews() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {hasReviews && !reduce && (
-              <button
-                type="button"
-                onClick={() => setUserPaused((p) => !p)}
-                aria-pressed={userPaused}
-                className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-4 text-sm font-semibold text-ink transition-colors hover:border-ink"
-              >
-                <Icon name={userPaused ? "play" : "pause"} className="h-4 w-4" />
-                {userPaused ? "Play" : "Pause"}
-              </button>
-            )}
             {hasReviews && (
               <a
                 href={clinic.maps.placeUrl}

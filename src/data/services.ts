@@ -6,6 +6,7 @@ export type Service = {
   slug: string;
   name: string;
   summary: string;
+  image?: string;
   body: string[];
   /** Questions a patient actually asks about this treatment */
   points: { q: string; a: string }[];
@@ -17,6 +18,7 @@ export const services: Service[] = [
     slug: "dental-implants",
     name: "Dental Implants",
     summary: "A titanium post placed in the jawbone to carry a crown, bridge or denture where a tooth is missing.",
+    image: "/images/services/dental-implants.jpg",
     body: [
       "An implant replaces the root of a missing tooth. A small titanium post is placed in the jawbone, and once it has bonded with the bone it carries a crown, a bridge or a denture.",
       "The choice between a crown, a bridge and a denture depends on how many teeth are missing, the condition of the bone and gums, and what you want from the result. That is decided at the consultation, not before it.",
@@ -31,6 +33,7 @@ export const services: Service[] = [
     slug: "full-mouth-rehabilitation",
     name: "Full Mouth Rehabilitation",
     summary: "A staged plan that rebuilds worn, broken or missing teeth across the whole mouth so the bite works as one.",
+    image: "/images/services/full-mouth-rehabilitation.jpg",
     body: [
       "Full mouth rehabilitation treats the mouth as a single system rather than one tooth at a time. It combines treatments — implants, crowns, root canals, gum care — into one sequenced plan.",
       "It usually suits people with widespread wear, several missing teeth, or a bite that no longer meets properly.",
@@ -45,6 +48,7 @@ export const services: Service[] = [
     slug: "root-canal-treatment",
     name: "Root Canal Treatment",
     summary: "Treatment for a tooth whose inner pulp has been reached by decay, so the natural tooth can be kept.",
+    image: "/images/services/root-canal-treatment.jpg",
     body: [
       "Decay is caused by bacteria. Left untreated, it can reach the dental pulp and the nerves inside the tooth, which causes pain and can discolour the tooth.",
       "A root canal cleans and seals the canals inside the root so the tooth can stay in place instead of being removed.",
@@ -58,6 +62,7 @@ export const services: Service[] = [
     slug: "dental-crowns-and-bridges",
     name: "Dental Crowns & Bridges",
     summary: "A crown caps a damaged tooth; a bridge spans the gap where a tooth is missing.",
+    image: "/images/services/dental-crowns-and-bridges.jpg",
     body: [
       "A crown covers a tooth that is damaged, worn or has had a root canal. A bridge replaces a missing tooth by anchoring to the teeth on either side.",
       "There are several materials to choose from. The choice depends on the aesthetics you want, where the tooth sits in the mouth, how many teeth need crowns, and your own preference.",
@@ -71,6 +76,7 @@ export const services: Service[] = [
     slug: "pediatric-and-preventive-dentistry",
     name: "Pediatric & Preventive Dentistry",
     summary: "Preventive and therapeutic care for infants, children and adolescents, including those with special health care needs.",
+    image: "/images/services/pediatric-and-preventive-dentistry.jpg",
     body: [
       "Pediatric dentistry is a specialised field focused on preventive and therapeutic care for infants, children and adolescents, including those with special health care needs.",
       "Early visits are mostly about prevention: checking how the teeth are coming through, cleaning, and showing children how to look after their own teeth.",
@@ -84,6 +90,7 @@ export const services: Service[] = [
     slug: "orthodontic-treatment",
     name: "Orthodontic Treatment — Braces & Clear Aligners",
     summary: "Fixed braces or removable clear aligners to straighten teeth and correct the bite.",
+    image: "/images/services/orthodontic-treatment.jpg",
     body: [
       "Healthy, aesthetically pleasing teeth play a vital role in confidence. Not everyone is born with a perfect set of teeth, and orthodontic treatment moves teeth into better alignment over time.",
       "Fixed braces and removable clear aligners both do this; which suits you depends on how much movement is needed and how you want to wear the appliance.",
@@ -97,6 +104,7 @@ export const services: Service[] = [
     slug: "cosmetic-dentistry",
     name: "Cosmetic Dentistry",
     summary: "Treatments that change the colour, shape or alignment of teeth.",
+    image: "/images/services/cosmetic-dentistry.jpg",
     body: [
       "Years of coffee, smoking or pigmented food can discolour teeth. Cosmetic dentistry covers the treatments that change how teeth look — their colour, their shape and their alignment.",
       "The right treatment depends on what is causing the appearance you want to change, which is why it starts with an examination.",
@@ -110,6 +118,7 @@ export const services: Service[] = [
     slug: "laser-dentistry",
     name: "Laser Dentistry",
     summary: "Use of a dental laser for selected gum and soft-tissue procedures.",
+    image: "/images/services/laser-dentistry.jpg",
     body: [
       "A dental laser is used for selected soft-tissue work in and around the gums, as an alternative to a blade for certain procedures.",
       "Whether a laser suits your treatment depends on the procedure. The clinic will tell you at the consultation if it applies to you.",
@@ -123,6 +132,7 @@ export const services: Service[] = [
     slug: "periodontal-disease",
     name: "Periodontal Disease",
     summary: "Treatment for gum disease, including the gum problems behind persistent bad breath.",
+    image: "/images/services/periodontal-disease.jpg",
     body: [
       "Halitosis, or bad breath, can come from several causes. One of them is gum disease, where bacteria build up below the gum line and inflame the tissue that holds the teeth in place.",
       "Treatment aims at the root cause rather than the smell: cleaning below the gum line and treating the gum condition itself.",
@@ -135,6 +145,7 @@ export const services: Service[] = [
     slug: "scaling-and-polishing",
     name: "Scaling & Polishing",
     summary: "Cleaning that removes the plaque and tartar built up along the gum line.",
+    image: "/images/services/scaling-and-polishing.jpg",
     body: [
       "Plaque hardens into tartar, which a toothbrush cannot remove. Scaling removes it; polishing smooths the tooth surface afterwards.",
       "This is routine, preventive work, and it is often what a check-up visit includes.",
@@ -145,6 +156,7 @@ export const services: Service[] = [
     slug: "tooth-fillings-and-restorations",
     name: "Fillings & Restorations",
     summary: "Repair of a tooth damaged by decay, before the decay reaches the nerves.",
+    image: "/images/services/tooth-fillings-and-restorations.jpg",
     body: [
       "Addressing early signs of tooth decay promptly is what keeps it from reaching the nerves. Timely treatment can save the tooth and avoid more complex treatment later.",
       "A filling removes the decayed part of the tooth and restores the shape of what is left.",
@@ -155,6 +167,7 @@ export const services: Service[] = [
     slug: "tooth-extraction",
     name: "Tooth Extraction",
     summary: "Removal of a tooth that cannot be saved, under local anaesthetic.",
+    image: "/images/services/tooth-extraction.jpg",
     body: [
       "Local anaesthetic is administered before any tooth extraction, so the area is numb during the procedure.",
       "Extraction is the last option, not the first: the clinic will tell you whether the tooth can be restored instead.",
@@ -168,6 +181,7 @@ export const services: Service[] = [
     slug: "general-dentistry",
     name: "General Dentistry",
     summary: "Routine care, from check-ups and cleaning through to the more involved treatments.",
+    image: "/images/services/general-dentistry.jpg",
     body: [
       "General dentistry covers the wide spectrum of dental issues, from routine check-ups through to intricate procedures — everything from basic cleaning to implant placement and surgical treatment.",
       "It is the starting point for most patients: an examination that decides what, if anything, needs doing next.",
@@ -178,6 +192,7 @@ export const services: Service[] = [
     slug: "teeth-whitening",
     name: "Teeth Whitening",
     summary: "Whitening carried out at the clinic, using non-toxic materials.",
+    image: "/images/services/teeth-whitening.jpg",
     body: [
       "Whitening lightens the colour of the natural tooth. The clinic uses materials chosen for safety, and the treatment is carried out under supervision rather than left to a home kit.",
       "Whether whitening is the right answer depends on what is causing the discolouration, which an examination establishes first.",
@@ -188,6 +203,7 @@ export const services: Service[] = [
     slug: "complete-dentures",
     name: "Complete Dentures",
     summary: "Removable replacements for a full upper or lower set of teeth.",
+    image: "/images/services/complete-dentures.jpg",
     body: [
       "Complete dentures replace a full arch of missing teeth. They are made to fit your gums and bite, and are removable for cleaning.",
       "Where the jawbone allows, implants can be used to hold a denture more firmly in place. That option is discussed at the consultation.",

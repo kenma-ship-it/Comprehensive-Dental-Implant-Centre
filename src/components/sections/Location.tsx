@@ -44,15 +44,18 @@ export function Location() {
           </div>
         </div>
 
-        <LazyMount minHeight={400} className="min-w-0 overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface">
-          <iframe
-            title={`Map showing ${clinic.name}, Cornwell Road, Bangalore`}
-            src={clinic.maps.embedUrl}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="h-[26rem] w-full border-0"
-          />
-        </LazyMount>
+        <div className="flex h-full min-h-[28rem] w-full flex-col">
+          <LazyMount minHeight="100%" className="relative flex h-full min-h-[28rem] w-full flex-1 flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-lift">
+            <iframe
+              title={`Map showing ${clinic.name}, Cornwell Road, Bangalore`}
+              src={clinic.maps.embedUrl}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="h-full min-h-[28rem] w-full flex-1 border-0"
+              style={{ display: "block", minHeight: "28rem", width: "100%", height: "100%" }}
+            />
+          </LazyMount>
+        </div>
       </div>
     </section>
   );

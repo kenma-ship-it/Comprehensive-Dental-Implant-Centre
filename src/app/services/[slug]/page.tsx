@@ -56,6 +56,15 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
           <div className="min-w-0">
             <h2 id="detail-title" className="sr-only">About {service.name}</h2>
+            {service.image && (
+              <div className="mb-8 overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-lift">
+                <img
+                  src={service.image}
+                  alt={`${service.name} procedure at Comprehensive Dental & Implant Centre Bangalore`}
+                  className="aspect-[16/9] w-full object-cover"
+                />
+              </div>
+            )}
             <div className="prose-measure grid gap-5 text-[1.06rem] leading-relaxed text-ink-soft">
               {service.body.map((p) => (
                 <p key={p.slice(0, 40)}>{p}</p>
