@@ -7,7 +7,7 @@ import { clinic } from "@/data/clinic";
 export const metadata: Metadata = {
   title: "About the clinic",
   description:
-    "Comprehensive Dental & Implant Centre at Cornwell Road, Langford Garden, Bangalore. Four specialist dentists led by Dr. Anuradha Navaneetham, MDS, oral and maxillofacial surgeon and implantologist.",
+    `${clinic.name} at ${clinic.address.line1}, ${clinic.address.line2}, ${clinic.address.city}. Four specialist dentists led by ${clinic.doctor.name}, ${clinic.doctor.qualification}.`,
   alternates: { canonical: "/about" },
 };
 
@@ -16,28 +16,32 @@ export default function AboutPage() {
     <>
       <PageHeader
         eyebrow="About us"
-        title="A clinic built around explaining the treatment first."
-        lede="Comprehensive Dental & Implant Centre is a dental practice at Cornwell Road, Langford Garden, near Richmond Circle in Bangalore."
+        title="A specialist practice that shows you the plan first."
+        lede={`${clinic.name} is a specialist dental practice on level 14 of Al Maryah Tower, overlooking the water in ${clinic.address.city}.`}
       />
 
       <section aria-labelledby="approach-title" className="py-20 lg:py-28">
-        <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
-          <h2 id="approach-title" className="h-section lg:sticky lg:top-28 lg:self-start">How the clinic works</h2>
-          <div className="prose-measure grid gap-5 text-[1.06rem] leading-relaxed text-ink-soft">
-            <p>
-              The practice takes a single approach to gentle family dentistry: make the visit as comfortable as it can
-              be, and explain the treatment options at every step so you can decide for yourself.
-            </p>
-            <p>
-              Treatment is planned from digital records of your teeth and bite rather than impressions alone — that is
-              what &ldquo;{clinic.tagline}&rdquo; means here. It lets the dentist show you what they are looking at, and
-              lets you see the plan before any work starts.
-            </p>
-            <p>
-              Because four dentists work at the clinic, your treatment goes to the one whose specialty it falls in:
-              surgery and implants, root canals, or orthodontics. You are treated with honesty, compassion and respect
-              throughout — and told when a treatment is not needed yet.
-            </p>
+        <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-20">
+          <figure className="overflow-hidden rounded-[2rem] bg-mint">
+            <img src="/images/clinic/room.jpg" alt="A treatment room with a dental chair and a window onto the city" className="aspect-[4/3] w-full object-cover" loading="lazy" />
+          </figure>
+          <div>
+            <h2 id="approach-title" className="h-section">How the clinic works</h2>
+            <div className="prose-measure mt-6 grid gap-5 text-[1.06rem] leading-relaxed text-ink-soft">
+              <p>
+                Dr. Lina Haddad opened Pearlstone in 2017 with one rule: no patient agrees to treatment they have not seen.
+                Every plan starts with a 3D scan of your teeth and bite, and a preview of the result on screen.
+              </p>
+              <p>
+                You leave a first consultation with a written plan: each stage, which dentist carries it out, how long it
+                takes and what it costs. Nothing starts until you have read it and said yes.
+              </p>
+              <p>
+                Four specialists share the practice, so your treatment goes to the dentist whose field it is in: implants and
+                crowns, oral surgery, orthodontics, or root canals. We bill the major insurers directly and speak{" "}
+                {clinic.languages.length} languages at the front desk.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -45,13 +49,12 @@ export default function AboutPage() {
       <section aria-labelledby="team-title" className="border-t border-line-soft bg-mint/50 py-20 lg:py-28">
         <div className="wrap">
           <h2 id="team-title" className="h-section">The dentists</h2>
-          <p className="lede mt-4">Credentials as the clinic lists them.</p>
+          <p className="lede mt-4">Open a profile for education, career, languages and the days each dentist is in.</p>
           <TeamGrid className="mt-12" />
-          <p className="mt-8 text-sm text-muted">Portraits of the team are to be supplied by the clinic.</p>
         </div>
       </section>
 
-      <Cta title="Meet the team." body="Book a consultation, and you will be told which dentist you are seeing and why." />
+      <Cta title="Start with a consultation." body="A 3D scan, a look at the options and a written plan, with no obligation to go ahead." />
     </>
   );
 }

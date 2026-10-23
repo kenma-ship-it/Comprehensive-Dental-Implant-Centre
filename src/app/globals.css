@@ -1,8 +1,6 @@
-/* Hallmark · macrostructure: Narrative Workflow · genre: editorial · tone: technical-but-warm
- * theme: custom (logo-anchored) · paper light oklch(96.4% 0.002 60) / dark oklch(16.5% 0.006 290) · accent red oklch(55% 0.19 29)
- * axes: light / grotesk-display / warm-accent · display Bricolage Grotesque + body Public Sans
- * nav N1b three-section · footer Ft1 mast-headed · enrichment E5 hand-built SVG (badge + stage diagrams)
- * pre-emit critique: P4 H4 E4 S5 R4 V5
+/* Pearlstone Dental · editorial private practice · calm, precise, warm light
+ * paper oklch(96.6% 0.005 140) / pine night oklch(24% 0.035 172) · brand pine oklch(43% 0.075 170)
+ * display Newsreader (serif, optical sizes) + body Instrument Sans · photography-led, one accent
  */
 @import "tailwindcss";
 
@@ -18,54 +16,54 @@
   /* Light primitives (OKLCH). Brand = the badge's signal red on near-black ink,
      on the warm off-white the clinic's own pages use. Legacy leaf-/tide- names
      map onto the red scale so shared components keep working. */
-  --color-paper: oklch(96.4% 0.002 60);
+  --color-paper: oklch(96.6% 0.005 140);
   --color-surface: oklch(100% 0 0);
-  --color-mint: oklch(93.6% 0.004 60);
-  --color-ice: oklch(96.8% 0.012 32);
-  --color-night: oklch(17.5% 0.006 290);
-  --color-night-2: oklch(22% 0.006 290);
+  --color-mint: oklch(93.8% 0.014 160);
+  --color-ice: oklch(95.2% 0.02 80);
+  --color-night: oklch(24% 0.035 172);
+  --color-night-2: oklch(28% 0.035 172);
 
-  --color-ink: oklch(19% 0.006 290);
-  --color-ink-soft: oklch(36% 0.006 290);
-  --color-muted: oklch(48% 0.006 290);
-  --color-line: oklch(88% 0.003 60);
-  --color-line-soft: oklch(92.6% 0.002 60);
-  --color-mist: oklch(54% 0.005 290);
-  --color-on-night: oklch(96% 0.002 60);
-  --color-on-night-muted: oklch(78% 0.004 60);
+  --color-ink: oklch(22% 0.022 175);
+  --color-ink-soft: oklch(35% 0.018 175);
+  --color-muted: oklch(47% 0.014 175);
+  --color-line: oklch(88.5% 0.01 155);
+  --color-line-soft: oklch(92.8% 0.008 155);
+  --color-mist: oklch(54% 0.012 175);
+  --color-on-night: oklch(96.5% 0.008 120);
+  --color-on-night-muted: oklch(81% 0.016 150);
 
-  --color-brand: oklch(55% 0.19 29);
-  --color-brand-strong: oklch(49% 0.19 29);
-  --color-brand-soft: oklch(95.5% 0.025 32);
-  --color-on-brand: oklch(99% 0.002 60);
+  --color-brand: oklch(43% 0.075 170);
+  --color-brand-strong: oklch(36% 0.07 172);
+  --color-brand-soft: oklch(94% 0.03 165);
+  --color-on-brand: oklch(99% 0.004 120);
 
-  --color-leaf-100: oklch(95.5% 0.025 32);
-  --color-leaf-300: oklch(80% 0.11 30);
-  --color-leaf-500: oklch(62% 0.18 30);
-  --color-leaf-600: oklch(55% 0.19 29);
-  --color-leaf-700: oklch(49% 0.19 29);
-  --color-tide-100: oklch(95.5% 0.025 32);
-  --color-tide-300: oklch(80% 0.11 30);
-  --color-tide-500: oklch(62% 0.18 30);
-  --color-tide-700: oklch(49% 0.19 29);
-  --color-tide-800: oklch(44% 0.18 29);
+  --color-leaf-100: oklch(94% 0.03 165);
+  --color-leaf-300: oklch(78% 0.07 165);
+  --color-leaf-500: oklch(55% 0.08 168);
+  --color-leaf-600: oklch(43% 0.075 170);
+  --color-leaf-700: oklch(36% 0.07 172);
+  --color-tide-100: oklch(94% 0.03 165);
+  --color-tide-300: oklch(78% 0.07 165);
+  --color-tide-500: oklch(55% 0.08 168);
+  --color-tide-700: oklch(36% 0.07 172);
+  --color-tide-800: oklch(32% 0.065 172);
 
-  --color-primary: oklch(55% 0.19 29);
-  --color-accent: oklch(55% 0.19 29);
+  --color-primary: oklch(43% 0.075 170);
+  --color-accent: oklch(43% 0.075 170);
   --color-danger: oklch(50% 0.19 27);
   --color-danger-soft: oklch(95.5% 0.02 27);
-  --color-flag: oklch(95% 0.05 90);
-  --color-flag-ink: oklch(40% 0.08 80);
+  --color-flag: oklch(95% 0.05 85);
+  --color-flag-ink: oklch(42% 0.07 75);
 
-  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-publicsans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --font-brand: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-brand: var(--font-serif), ui-serif, Georgia, serif;
 
-  --radius-card: 1.5rem;
+  --radius-card: 1.25rem;
   --radius-field: 0.75rem;
-  --shadow-lift: 0 1px 2px oklch(19% 0.006 290 / 0.05), 0 18px 40px -20px oklch(19% 0.006 290 / 0.22);
-  --shadow-panel: 0 1px 0 oklch(19% 0.006 290 / 0.04), 0 34px 64px -32px oklch(19% 0.006 290 / 0.3);
+  --shadow-lift: 0 1px 2px oklch(22% 0.03 175 / 0.05), 0 18px 40px -20px oklch(22% 0.03 175 / 0.22);
+  --shadow-panel: 0 1px 0 oklch(22% 0.03 175 / 0.04), 0 34px 64px -32px oklch(22% 0.03 175 / 0.3);
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -76,45 +74,45 @@
    ========================================================================== */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-paper: oklch(16.5% 0.006 290);
-  --color-surface: oklch(21% 0.007 290);
-  --color-mint: oklch(19.5% 0.007 290);
-  --color-ice: oklch(21% 0.012 29);
-  --color-night: oklch(12% 0.005 290);
-  --color-night-2: oklch(15% 0.006 290);
+  --color-paper: oklch(18.5% 0.02 175);
+  --color-surface: oklch(22.5% 0.022 175);
+  --color-mint: oklch(21% 0.022 172);
+  --color-ice: oklch(23% 0.025 80);
+  --color-night: oklch(14% 0.02 175);
+  --color-night-2: oklch(17% 0.02 175);
 
-  --color-ink: oklch(96% 0.002 60);
-  --color-ink-soft: oklch(87% 0.003 60);
-  --color-muted: oklch(77% 0.004 60);
-  --color-line: oklch(32% 0.008 290);
-  --color-line-soft: oklch(26% 0.007 290);
-  --color-mist: oklch(62% 0.006 290);
+  --color-ink: oklch(96% 0.006 120);
+  --color-ink-soft: oklch(87% 0.01 140);
+  --color-muted: oklch(76% 0.012 150);
+  --color-line: oklch(33% 0.02 172);
+  --color-line-soft: oklch(27% 0.02 172);
+  --color-mist: oklch(62% 0.014 172);
 
-  --color-brand: oklch(72% 0.16 32);
-  --color-brand-strong: oklch(66% 0.18 31);
-  --color-brand-soft: oklch(27% 0.06 30);
-  --color-on-brand: oklch(14% 0.01 30);
+  --color-brand: oklch(80% 0.09 165);
+  --color-brand-strong: oklch(84% 0.085 165);
+  --color-brand-soft: oklch(29% 0.045 168);
+  --color-on-brand: oklch(18% 0.03 172);
 
-  --color-leaf-100: oklch(27% 0.06 30);
-  --color-leaf-300: oklch(58% 0.14 30);
-  --color-leaf-500: oklch(68% 0.17 31);
-  --color-leaf-600: oklch(72% 0.16 32);
-  --color-leaf-700: oklch(66% 0.18 31);
-  --color-tide-100: oklch(27% 0.06 30);
-  --color-tide-300: oklch(58% 0.14 30);
-  --color-tide-500: oklch(68% 0.17 31);
-  --color-tide-700: oklch(66% 0.18 31);
-  --color-tide-800: oklch(74% 0.15 32);
+  --color-leaf-100: oklch(29% 0.045 168);
+  --color-leaf-300: oklch(62% 0.08 166);
+  --color-leaf-500: oklch(74% 0.09 165);
+  --color-leaf-600: oklch(80% 0.09 165);
+  --color-leaf-700: oklch(84% 0.085 165);
+  --color-tide-100: oklch(29% 0.045 168);
+  --color-tide-300: oklch(62% 0.08 166);
+  --color-tide-500: oklch(74% 0.09 165);
+  --color-tide-700: oklch(84% 0.085 165);
+  --color-tide-800: oklch(86% 0.08 165);
 
-  --color-primary: oklch(72% 0.16 32);
-  --color-accent: oklch(72% 0.16 32);
+  --color-primary: oklch(80% 0.09 165);
+  --color-accent: oklch(80% 0.09 165);
   --color-danger: oklch(76% 0.13 27);
   --color-danger-soft: oklch(27% 0.06 27);
 
   --logo-ink: oklch(96% 0.002 60);
-  --logo-brand: oklch(70% 0.17 31);
-  --logo-tooth: oklch(21% 0.007 290);
-  --logo-ring: oklch(40% 0.01 290);
+  --logo-brand: oklch(80% 0.09 165);
+  --logo-tooth: oklch(22.5% 0.022 175);
+  --logo-ring: oklch(40% 0.02 172);
 
   --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.4), 0 18px 40px -20px oklch(0% 0 0 / 0.7);
   --shadow-panel: 0 1px 0 oklch(0% 0 0 / 0.3), 0 34px 64px -32px oklch(0% 0 0 / 0.8);
@@ -195,8 +193,8 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.028em;
+  font-weight: 450;
+  letter-spacing: -0.018em;
   line-height: 1.08;
   text-wrap: balance;
 }
@@ -527,4 +525,13 @@ section[id] {
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none !important; transform: none !important; }
+}
+
+/* Hero photo: one first-entry reveal, the image settling into its frame. */
+.hero-photo {
+  animation: hero-photo-in 1.4s var(--ease-out-soft) both;
+}
+@keyframes hero-photo-in {
+  from { clip-path: inset(18% 0 0 0 round 2.25rem); transform: scale(1.12); }
+  to { clip-path: inset(0 0 0 0 round 2.25rem); transform: scale(1); }
 }

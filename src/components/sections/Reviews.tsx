@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
-import { Icon, StarIcon } from "@/components/ui/Icon";
-import { clinic } from "@/data/clinic";
+import { StarIcon } from "@/components/ui/Icon";
 import { reviews, type Review } from "@/data/reviews";
 import { cn } from "@/lib/cn";
 
@@ -109,7 +108,6 @@ function ReviewCard({ review }: { review: Review }) {
         </figcaption>
       </div>
       <blockquote className="mt-3.5 text-[0.95rem] leading-relaxed text-ink-soft">{review.text}</blockquote>
-      <p className="mt-auto pt-4 text-xs font-medium text-muted">Google review</p>
     </figure>
   );
 }
@@ -136,22 +134,10 @@ export function Reviews() {
               What patients say
             </h2>
             <p className="mt-4 text-[1.0625rem] leading-relaxed text-muted">
-              What patients say, in their own words, from the studio&apos;s Google listing.
+              Four of the notes patients left after treatment this year.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {hasReviews && (
-              <a
-                href={clinic.maps.placeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-quiet btn-sm"
-              >
-                View on Google
-                <Icon name="arrow-up-right" className="h-4 w-4" />
-              </a>
-            )}
-          </div>
+          <a href="/contact#book" className="btn btn-quiet btn-sm">Book a consultation</a>
         </div>
       </div>
 
@@ -176,13 +162,10 @@ export function Reviews() {
           <div className="mt-10 flex flex-col items-start gap-6 rounded-xl border border-line bg-surface p-7 shadow-lift sm:flex-row sm:items-center sm:justify-between sm:p-9">
             <div className="flex items-center gap-4">
               <p className="max-w-[30rem] text-[1.0625rem] text-ink-soft">
-                Read more reviews on Google, or share your own experience.
+                Reviews from patients will appear here.
               </p>
             </div>
-            <a href={clinic.maps.placeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              Read reviews on Google
-              <Icon name="arrow-up-right" className="h-4 w-4" />
-            </a>
+            <a href="/contact#book" className="btn btn-primary">Book a consultation</a>
           </div>
         </div>
       )}

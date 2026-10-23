@@ -8,9 +8,9 @@ const stage = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transit
 
 const stages = [
   { n: "1.0", title: "We look, and we listen", body: "A first visit starts with an examination and a conversation about what brought you in — pain, a missing tooth, or a check-up that is overdue.", Art: ConsultArt },
-  { n: "2.0", title: "Your mouth, on screen", body: "Digital records of your teeth and bite replace guesswork. You see what the dentist sees before anything is decided.", Art: ScanArt },
+  { n: "2.0", title: "Your mouth, on screen", body: "A 3D scan of your teeth and bite replaces guesswork. You see what the dentist sees, and a preview of the result, before anything is decided.", Art: ScanArt },
   { n: "3.0", title: "A plan, in stages", body: "You are told what the treatment involves, in what order, and what each stage is for — including the option of doing nothing yet.", Art: PlanArt },
-  { n: "4.0", title: "Treatment", body: "Carried out by the dentist whose specialty it is: surgery and implants, endodontics, or orthodontics.", Art: TreatmentArt },
+  { n: "4.0", title: "Treatment", body: "Carried out by the dentist whose specialty it is: implants and crowns, oral surgery, orthodontics or root canals.", Art: TreatmentArt },
   { n: "5.0", title: "Afterwards", body: "Aftercare instructions, and a follow-up when the treatment calls for one.", Art: AftercareArt },
 ];
 

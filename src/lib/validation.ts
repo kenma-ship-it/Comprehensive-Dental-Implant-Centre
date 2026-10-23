@@ -10,19 +10,16 @@ export function validateName(input: string): FieldResult {
 }
 
 /**
- * Indian mobile numbers: 10 digits starting 6-9. Accepts spaces, dashes,
- * a leading 0, or +91 / 91. Returns the plain 10 digits.
+ * International phone numbers: 8 to 15 digits, with an optional leading +.
+ * Accepts spaces, dashes and brackets. Returns the number as + and digits.
  */
 export function validatePhone(input: string): FieldResult {
-  let digits = input.replace(/[^\d+]/g, "");
-  if (digits.startsWith("+91")) digits = digits.slice(3);
-  else if (digits.startsWith("91") && digits.length === 12) digits = digits.slice(2);
-  else if (digits.startsWith("0") && digits.length === 11) digits = digits.slice(1);
-  digits = digits.replace(/\D/g, "");
-  if (!/^[6-9]\d{9}$/.test(digits)) {
-    return { ok: false, message: "Enter a 10-digit Indian mobile number, for example 98765 43210." };
+  const plus = input.trim().startsWith("+");
+  const digits = input.replace(/\D/g, "");
+  if (digits.length < 8 || digits.length > 15) {
+    return { ok: false, message: "Enter your mobile number with country code, for example +971 50 123 4567." };
   }
-  return { ok: true, value: digits };
+  return { ok: true, value: `${plus ? "+" : ""}${digits}` };
 }
 
 export function validateMessage(input: string, required = true): FieldResult {
@@ -32,4 +29,4 @@ export function validateMessage(input: string, required = true): FieldResult {
   return { ok: true, value };
 }
 
-export const formatPhone = (tenDigits: string) => `${tenDigits.slice(0, 5)} ${tenDigits.slice(5)}`;
+export const formatPhone = (phone: string) => phone;

@@ -1,35 +1,48 @@
 import Link from "next/link";
-import { LogoMarkAnimated } from "@/components/brand/LogoMark";
+import BlurText from "@/components/reactbits/BlurText";
 import { Button } from "@/components/ui/Button";
-import { clinic, telUrl } from "@/data/clinic";
+import { clinic } from "@/data/clinic";
+import { team } from "@/data/team";
 import { ClinicStatus } from "./ClinicStatus";
+import { NextSlotCard } from "./NextSlotCard";
 
 export function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="overflow-hidden py-16 lg:py-24">
-      <div className="wrap grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+    <section aria-labelledby="hero-title" className="overflow-hidden pt-10 pb-16 lg:pt-14 lg:pb-24">
+      <div className="wrap grid items-center gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
         <div className="min-w-0">
           <ClinicStatus />
-          <h1 id="hero-title" className="h-display mt-7 [overflow-wrap:anywhere]">
-            Dentistry goes <span className="text-brand">digital</span> in Richmond Circle.
+          <h1 id="hero-title" className="mt-7 text-[clamp(2.7rem,1.6rem+4.4vw,5.4rem)] leading-[1.02] tracking-[-0.025em]">
+            <BlurText text="See your new smile before a single tooth is touched." animateBy="words" delay={70} direction="bottom" trigger="load" />
           </h1>
-          <p className="lede mt-6">
-            Implants, full mouth rehabilitation and everyday dental care at Cornwell Road, Bangalore — planned from
-            digital records, carried out by four specialist dentists.
+          <p className="lede mt-6 max-w-[34rem]">
+            Four specialists on {clinic.address.line2}. Every plan starts with a 3D scan, a preview on screen and a written cost, and nothing begins until you say yes.
           </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Button href="/contact" size="lg" iconAfter="arrow-right">Book an appointment</Button>
-            <Button href={telUrl} size="lg" variant="quiet" icon="phone">{clinic.phone.display}</Button>
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Button href="/contact#book" size="lg" iconAfter="arrow-right">Book an appointment</Button>
+            <Button href="/services" size="lg" variant="quiet">Treatments</Button>
           </div>
-          <p className="mt-7 text-sm text-muted">
-            {clinic.hours.displayShort}, {clinic.hours.displayTime} ·{" "}
-            <Link href="/contact" className="link">Find the clinic</Link>
-          </p>
+
+          <Link href="/dentists" className="group mt-10 inline-flex items-center gap-4">
+            <span className="flex -space-x-3">
+              {team.map((d) => (
+                <img key={d.id} src={d.photo} alt="" className="h-11 w-11 rounded-full border-2 border-paper object-cover transition-transform duration-300 group-hover:-translate-y-0.5" />
+              ))}
+            </span>
+            <span className="text-[0.95rem] leading-snug text-ink-soft">
+              <span className="font-semibold text-ink">{clinic.doctor.name}</span> and three specialists
+              <span className="block text-muted group-hover:text-brand">Meet the dentists</span>
+            </span>
+          </Link>
         </div>
 
         <div className="relative min-w-0">
-          <div aria-hidden="true" className="absolute inset-[14%] rounded-full bg-brand-soft blur-2xl" />
-          <LogoMarkAnimated className="relative mx-auto h-auto w-[78%] max-w-[22rem] lg:w-full" />
+          <div className="relative ml-auto aspect-[4/5] w-full max-w-[34rem] overflow-hidden rounded-[2.25rem] bg-mint">
+            <img src="/images/clinic/suite.jpg" alt="A treatment suite with a dental chair by the window" className="hero-photo h-full w-full object-cover" fetchPriority="high" />
+          </div>
+          <div className="absolute -bottom-8 left-0 w-[min(21rem,86%)] sm:-left-6 lg:-left-12">
+            <NextSlotCard />
+          </div>
         </div>
       </div>
     </section>

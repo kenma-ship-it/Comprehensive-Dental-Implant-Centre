@@ -1,6 +1,6 @@
 /**
- * The fifteen treatments the clinic lists across its pages, with its own descriptions rewritten
- * in plain English. No outcomes, durations, prices or guarantees.
+ * The fifteen treatments the clinic offers, in plain English. Demo content: review with the
+ * client before going live. No outcomes or guarantees.
  */
 export type Service = {
   slug: string;
@@ -24,7 +24,7 @@ export const services: Service[] = [
       "The choice between a crown, a bridge and a denture depends on how many teeth are missing, the condition of the bone and gums, and what you want from the result. That is decided at the consultation, not before it.",
     ],
     points: [
-      { q: "Who places the implant?", a: "Dr. Anuradha Navaneetham and Dr. Romir Navaneetham, both oral and maxillofacial surgeons and implantologists." },
+      { q: "Who places the implant?", a: "Dr. Lina Haddad plans and restores the implant; Dr. Omar Al Suwaidi places it when bone grafting or complex surgery is needed." },
       { q: "What is checked first?", a: "The health of your gums, the bone available in the jaw, and your general medical history." },
     ],
     featured: true,
@@ -54,7 +54,7 @@ export const services: Service[] = [
       "A root canal cleans and seals the canals inside the root so the tooth can stay in place instead of being removed.",
     ],
     points: [
-      { q: "Who carries it out?", a: "Dr. Rachana Doddala, an endodontist — a dentist who has specialised in the inside of the tooth." },
+      { q: "Who carries it out?", a: "Dr. Karim Nassar, an endodontist — a dentist who has specialised in the inside of the tooth. He works under a surgical microscope." },
       { q: "Will the tooth need a crown?", a: "Often yes. A treated tooth is more brittle, so it is usually protected with a crown." },
     ],
   },
@@ -96,7 +96,7 @@ export const services: Service[] = [
       "Fixed braces and removable clear aligners both do this; which suits you depends on how much movement is needed and how you want to wear the appliance.",
     ],
     points: [
-      { q: "Who handles orthodontics here?", a: "Dr. Pranav Poornima Pradeep, an orthodontist working with teeth alignment, Invisalign and braces." },
+      { q: "Who handles orthodontics here?", a: "Dr. Sarah Whitfield, an orthodontist and Invisalign Diamond Provider who treats children, teenagers and adults." },
       { q: "Braces or aligners?", a: "Decided at the consultation, after the bite and the teeth have been assessed." },
     ],
   },
@@ -173,7 +173,7 @@ export const services: Service[] = [
       "Extraction is the last option, not the first: the clinic will tell you whether the tooth can be restored instead.",
     ],
     points: [
-      { q: "What about wisdom teeth?", a: "Impacted teeth, trauma and TMJ are Dr. Romir Navaneetham's area as an oral and maxillofacial surgeon." },
+      { q: "What about wisdom teeth?", a: "Impacted wisdom teeth are Dr. Omar Al Suwaidi's area as an oral and maxillofacial surgeon. He plans each one from a 3D scan." },
       { q: "What happens afterwards?", a: "You are given aftercare instructions for the days following the extraction." },
     ],
   },

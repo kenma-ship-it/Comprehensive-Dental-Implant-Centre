@@ -47,7 +47,7 @@ export function Location() {
         <div className="flex h-full min-h-[28rem] w-full flex-col">
           <LazyMount minHeight="100%" className="relative flex h-full min-h-[28rem] w-full flex-1 flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-lift">
             <iframe
-              title={`Map showing ${clinic.name}, Cornwell Road, Bangalore`}
+              title={`Map showing ${clinic.name}, ${clinic.address.line2}, ${clinic.address.city}`}
               src={clinic.maps.embedUrl}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

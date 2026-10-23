@@ -1,15 +1,18 @@
 /**
- * Date helpers. The clinic works in India Standard Time, so "today" and "now"
- * are always calculated in Asia/Kolkata, whatever the visitor's device says.
+ * Date helpers. "Today" and "now" are always calculated in the clinic's own time zone
+ * (clinic.timeZone), whatever the visitor's device says.
  * Dates travel as ISO strings (YYYY-MM-DD) and times as "HH:mm".
  */
 
-export const CLINIC_TZ = "Asia/Kolkata";
+import { clinic } from "@/data/clinic";
 
-export type IstNow = {
-  /** Today's date in IST, YYYY-MM-DD */
+export const CLINIC_TZ = clinic.timeZone;
+const LOCALE = clinic.locale;
+
+export type ClinicNow = {
+  /** Today's date in the clinic's time zone, YYYY-MM-DD */
   iso: string;
-  /** Minutes since midnight in IST */
+  /** Minutes since midnight in the clinic's time zone */
   minutes: number;
   /** 0 = Sunday ... 6 = Saturday */
   weekday: number;
@@ -30,7 +33,7 @@ export function addDays(iso: string, days: number): string {
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
 }
 
-export function getIstNow(date: Date = new Date()): IstNow {
+export function getClinicNow(date: Date = new Date()): ClinicNow {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: CLINIC_TZ,
     year: "numeric",
@@ -70,7 +73,7 @@ const utcDate = (iso: string) => {
 };
 
 export function formatDateLong(iso: string): string {
-  return new Intl.DateTimeFormat("en-IN", {
+  return new Intl.DateTimeFormat(LOCALE, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -80,7 +83,7 @@ export function formatDateLong(iso: string): string {
 }
 
 export function formatDateShort(iso: string): string {
-  return new Intl.DateTimeFormat("en-IN", {
+  return new Intl.DateTimeFormat(LOCALE, {
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -89,11 +92,11 @@ export function formatDateShort(iso: string): string {
 }
 
 export function monthLabel(iso: string): string {
-  return new Intl.DateTimeFormat("en-IN", { month: "long", year: "numeric", timeZone: "UTC" }).format(utcDate(iso));
+  return new Intl.DateTimeFormat(LOCALE, { month: "long", year: "numeric", timeZone: "UTC" }).format(utcDate(iso));
 }
 
 export function weekdayShort(iso: string): string {
-  return new Intl.DateTimeFormat("en-IN", { weekday: "short", timeZone: "UTC" }).format(utcDate(iso));
+  return new Intl.DateTimeFormat(LOCALE, { weekday: "short", timeZone: "UTC" }).format(utcDate(iso));
 }
 
 export function relativeDayLabel(iso: string, todayIso: string): string {

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { Instrument_Sans, Newsreader } from "next/font/google";
 import { clinic, SITE_URL, addressOneLine } from "@/data/clinic";
 import { ALLOW_INDEXING, siteDescription, siteTitle } from "@/lib/site";
 import { services } from "@/data/services";
@@ -13,22 +13,22 @@ import { StickyMobileCta } from "@/components/sections/StickyMobileCta";
 import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
 
-const bricolage = localFont({ src: "./fonts/bricolage-grotesque-latin-wght-normal.woff2", display: "swap", weight: "200 800", variable: "--font-bricolage" });
-const publicSans = localFont({ src: "./fonts/public-sans-latin-wght-normal.woff2", display: "swap", weight: "100 900", variable: "--font-publicsans" });
+const serif = Newsreader({ subsets: ["latin"], display: "swap", style: ["normal", "italic"], axes: ["opsz"], variable: "--font-serif" });
+const body = Instrument_Sans({ subsets: ["latin"], display: "swap", variable: "--font-body" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: siteTitle, template: `%s | ${clinic.name}` },
   description: siteDescription,
-  openGraph: { type: "website", locale: "en_IN", siteName: clinic.name, title: siteTitle, description: siteDescription },
+  openGraph: { type: "website", locale: "en_AE", siteName: clinic.name, title: siteTitle, description: siteDescription },
   alternates: { canonical: "/" },
   robots: { index: ALLOW_INDEXING, follow: ALLOW_INDEXING },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f4f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1a1e" },
+    { media: "(prefers-color-scheme: light)", color: "#f3f5f2" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1d1a" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -40,7 +40,6 @@ function JsonLd() {
     "@type": "Dentist",
     "@id": `${SITE_URL}/#clinic`,
     name: clinic.name,
-    alternateName: "Comprehensive Dental Implant Center",
     description: siteDescription,
     slogan: clinic.tagline,
     url: SITE_URL,
@@ -95,7 +94,7 @@ function JsonLd() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" data-theme="light" suppressHydrationWarning className={`${bricolage.variable} ${publicSans.variable}`}>
+    <html lang="en" data-theme="light" suppressHydrationWarning className={`${serif.variable} ${body.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <JsonLd />

@@ -6,7 +6,7 @@ import { Cta } from "@/components/sections/Cta";
 export const metadata: Metadata = {
   title: "Dental treatments",
   description:
-    "Dental implants, full mouth rehabilitation, root canal treatment, crowns and bridges, braces and clear aligners, laser dentistry, gum treatment and children's dentistry in Richmond Circle, Bangalore.",
+    "Dental implants, full mouth rehabilitation, root canal treatment, crowns and bridges, braces and clear aligners, laser dentistry, gum treatment and children's dentistry on Al Maryah Island, Abu Dhabi.",
   alternates: { canonical: "/services" },
 };
 

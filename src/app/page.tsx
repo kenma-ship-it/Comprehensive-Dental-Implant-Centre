@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
+import { ClinicFacts } from "@/components/sections/ClinicFacts";
 import { Journey } from "@/components/sections/Journey";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
 import { TeamGrid } from "@/components/sections/TeamGrid";
@@ -12,14 +13,15 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <ClinicFacts />
       <Journey />
 
       <section aria-labelledby="treatments-title" className="border-t border-line-soft bg-mint/50 py-20 lg:py-28">
         <div className="wrap">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-[36rem]">
-              <h2 id="treatments-title" className="h-section">What the clinic treats</h2>
-              <p className="lede mt-4">From a routine clean to a full mouth rebuilt in stages.</p>
+              <h2 id="treatments-title" className="h-section">Treatments</h2>
+              <p className="lede mt-4">From a six-monthly clean to a full mouth rebuilt in stages, each led by the specialist for it.</p>
             </div>
             <Button href="/services" variant="quiet" iconAfter="arrow-right">All treatments</Button>
           </div>
@@ -31,12 +33,12 @@ export default function HomePage() {
         <div className="wrap">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="max-w-[36rem]">
-              <h2 id="team-title" className="h-section">Four dentists, four specialties</h2>
+              <h2 id="team-title" className="h-section">Your dentists</h2>
               <p className="lede mt-4">
-                Surgery and implants, endodontics, orthodontics — you see the dentist whose field your treatment is in.
+                Trained in New York, London, Toronto and Boston. You see the specialist whose field your treatment is in.
               </p>
             </div>
-            <Link href="/about" className="link">About the clinic</Link>
+            <Link href="/dentists" className="link">All dentists</Link>
           </div>
           <TeamGrid className="mt-12" />
         </div>

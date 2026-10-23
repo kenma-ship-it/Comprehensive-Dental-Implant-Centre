@@ -1,6 +1,6 @@
 import { ogSize, renderOgImage } from "@/lib/og";
 
-export const alt = "Comprehensive Dental & Implant Centre, Bangalore";
+export const alt = "Pearlstone Dental, Al Maryah Island, Abu Dhabi";
 export const size = ogSize;
 export const contentType = "image/png";
 

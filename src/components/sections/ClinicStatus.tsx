@@ -1,14 +1,14 @@
 "use client";
 
-import { useIstNow } from "@/hooks/useIstNow";
+import { useClinicNow } from "@/hooks/useClinicNow";
 import { clinic } from "@/data/clinic";
 import { getClinicStatus } from "@/lib/slots";
 import { formatTime, relativeDayLabel, weekdayShort } from "@/lib/time";
 import { cn } from "@/lib/cn";
 
-/** Live "open now / closed" pill, worked out in India time from the opening rules. */
+/** Live "open now / closed" pill, worked out in the clinic's time zone from the opening rules. */
 export function ClinicStatus({ className }: { className?: string }) {
-  const now = useIstNow();
+  const now = useClinicNow();
   const status = now ? getClinicStatus(now) : null;
 
   let label = `Clinic open ${clinic.hours.displayShort}`;

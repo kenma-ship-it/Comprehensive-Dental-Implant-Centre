@@ -22,7 +22,7 @@ export function ServiceGrid({ items = services, className }: { items?: Service[]
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-mint/20">
                 <img
                   src={s.image}
-                  alt={`${s.name} treatment at Comprehensive Dental & Implant Centre Bangalore`}
+                  alt={`${s.name} at Pearlstone Dental`}
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

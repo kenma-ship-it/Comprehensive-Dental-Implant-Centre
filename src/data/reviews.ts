@@ -1,26 +1,33 @@
 export type Review = { id: string; name: string; stars?: 1 | 2 | 3 | 4 | 5; when?: string; text: string };
 
-/**
- * Patient reviews as published on the clinic's own website, word for word.
- * Do not edit or reword them. Add `when` once the dates are confirmed.
- */
+/** Demo reviews. Replace with the client's own published reviews before going live. */
 export const reviews: Review[] = [
   {
-    id: "syed-sufi",
-    name: "Syed Sufi",
+    id: "noor-a",
+    name: "Noor A.",
     stars: 5,
-    text: "I have been going comprehensive dental implant center for years and have always received excellent care Thank you Dr . Anuradha maam",
+    when: "September 2026",
+    text: "Dr. Lina showed me my new smile on the screen before she touched a single tooth. Two implants later, I honestly cannot tell which teeth are mine.",
   },
   {
-    id: "aashish-chandra",
-    name: "Aashish Chandra",
+    id: "james-m",
+    name: "James M.",
     stars: 5,
-    text: "I met with doctor Anuradha Ma'am 10 year back and it's super helpful in all respects Consultation and medication is very much helpful.",
+    when: "August 2026",
+    text: "I had been putting off a root canal for a year. Dr. Karim explained every step, and I felt nothing. Booked online, was seen on time to the minute.",
   },
   {
-    id: "jeet-kumar",
-    name: "Jeet Kumar",
+    id: "maria-s",
+    name: "Maria S.",
     stars: 5,
-    text: "I had a teeth extraction. It was done in professional way without much pain. Its good choice to have my dental checkup here",
+    when: "July 2026",
+    text: "My daughter's Invisalign plan was clear from the first visit, with the cost and number of aligners in writing. The front desk handled our Daman claim directly.",
+  },
+  {
+    id: "faisal-k",
+    name: "Faisal K.",
+    stars: 4,
+    when: "June 2026",
+    text: "Wisdom teeth out with Dr. Omar. Quick, calm and a follow-up call the next morning. Parking in the tower took a while to find.",
   },
 ];

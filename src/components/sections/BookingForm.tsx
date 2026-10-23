@@ -1,27 +1,64 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { m } from "motion/react";
+import { m, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
-import { clinic, whatsappUrl, telUrl } from "@/data/clinic";
+import { LogoMark } from "@/components/brand/LogoMark";
+import { clinic, whatsappUrl, telUrl, addressOneLine } from "@/data/clinic";
 import { serviceOptions } from "@/data/services";
-import { useIstNow } from "@/hooks/useIstNow";
+import { team, doctorById } from "@/data/team";
+import { useClinicNow } from "@/hooks/useClinicNow";
 import { useLocalBookings } from "@/hooks/useLocalBookings";
-import { clearLocalBookings, submitAppointment, type AppointmentReceipt, type AppointmentRequest } from "@/lib/appointments";
+import { submitAppointment, type AppointmentReceipt, type AppointmentRequest } from "@/lib/appointments";
 import { cn } from "@/lib/cn";
 import { PREFILL_EVENT, type BookingPrefill } from "@/lib/prefill";
 import { getBookableDays, getDaySlots, type DayCell, type Slot } from "@/lib/slots";
-import { formatDateLong, formatTime, weekdayShort, monthLabel } from "@/lib/time";
-import { validateName, validatePhone, formatPhone, type FieldResult } from "@/lib/validation";
+import { CLINIC_TZ, formatDateLong, formatTime, weekdayShort, monthLabel, relativeDayLabel } from "@/lib/time";
+import { validateName, validatePhone, type FieldResult } from "@/lib/validation";
+
+/** ?doctor=&service=&date=&time= lets any page link straight into a pre-filled booking. */
+function readUrlPrefill(): BookingPrefill {
+  if (typeof window === "undefined") return {};
+  const q = new URLSearchParams(window.location.search);
+  return {
+    doctorId: q.get("doctor") ?? undefined,
+    serviceId: q.get("service") ?? undefined,
+    date: q.get("date") ?? undefined,
+    time: q.get("time") ?? undefined,
+  };
+}
+
+/** Calendar invite in the clinic's own time zone. */
+function icsHref(r: AppointmentReceipt) {
+  const stamp = (iso: string, hhmm: string) => `${iso.replace(/-/g, "")}T${hhmm.replace(":", "")}00`;
+  const [h, mm] = r.request.time.split(":").map(Number);
+  const end = `${String(h + Math.floor((mm + 45) / 60)).padStart(2, "0")}:${String((mm + 45) % 60).padStart(2, "0")}`;
+  const body = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", `PRODID:-//${clinic.name}//Booking//EN`, "BEGIN:VEVENT",
+    `UID:${r.reference}@${clinic.shortName.toLowerCase()}`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "")}`,
+    `DTSTART;TZID=${CLINIC_TZ}:${stamp(r.request.date, r.request.time)}`,
+    `DTEND;TZID=${CLINIC_TZ}:${stamp(r.request.date, end)}`,
+    `SUMMARY:${r.request.serviceName} at ${clinic.name}`,
+    `LOCATION:${addressOneLine}`,
+    `DESCRIPTION:Booking ${r.reference} with ${r.request.doctorName}. ${clinic.phone.display}`,
+    "END:VEVENT", "END:VCALENDAR",
+  ].join("\r\n");
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(body)}`;
+}
 
 export function BookingForm() {
-  const now = useIstNow();
+  const now = useClinicNow();
   const local = useLocalBookings();
+  const reduce = useReducedMotion();
 
-  const [serviceId, setServiceId] = useState("not-sure");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [initial] = useState(readUrlPrefill);
+  const [doctorId, setDoctorId] = useState(doctorById(initial.doctorId) ? initial.doctorId! : "any");
+  const [serviceId, setServiceId] = useState(serviceOptions.some((s) => s.id === initial.serviceId) ? initial.serviceId! : "consultation");
+  const [selectedDate, setSelectedDate] = useState<string | null>(initial.date ?? null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(initial.time ?? null);
+  const [week, setWeek] = useState(0);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
@@ -35,6 +72,7 @@ export function BookingForm() {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<BookingPrefill>).detail ?? {};
       if (detail.serviceId) setServiceId(detail.serviceId);
+      if (detail.doctorId && doctorById(detail.doctorId)) setDoctorId(detail.doctorId);
       if (detail.date) setSelectedDate(detail.date);
       if (detail.time) setSelectedTime(detail.time);
       setReceipt(null);
@@ -44,172 +82,234 @@ export function BookingForm() {
     return () => window.removeEventListener(PREFILL_EVENT, handler);
   }, []);
 
-  const days: DayCell[] = now ? getBookableDays(now) : [];
+  const doctor = doctorById(doctorId);
+  const docKey = doctor?.id;
+  const days: DayCell[] = now ? getBookableDays(now, docKey) : [];
+  const pickedDay = selectedDate ? days.find((d) => d.iso === selectedDate && d.status === "open") : undefined;
   // Until the visitor picks a day, show the first day with open slots
-  const activeDate = selectedDate ?? days.find((d) => d.status === "open")?.iso ?? null;
-  const slots: Slot[] = now && activeDate ? getDaySlots(activeDate, now, local) : [];
-  const serviceName = serviceOptions.find((s) => s.id === serviceId)?.name ?? "Not sure yet";
-  // The clinic runs one continuous session, so slots are grouped by clock half
+  const activeDate = pickedDay?.iso ?? days.find((d) => d.status === "open")?.iso ?? null;
+  const slots: Slot[] = now && activeDate ? getDaySlots(activeDate, now, local, docKey) : [];
+  const timeOk = !!selectedTime && slots.some((s) => s.time === selectedTime && s.status === "available");
+  const serviceName = serviceOptions.find((s) => s.id === serviceId)?.name ?? "Consultation";
   const mornSlots = slots.filter((s) => Number(s.time.slice(0, 2)) < 13);
-  const eveSlots = slots.filter((s) => Number(s.time.slice(0, 2)) >= 13);
+  const dayslots = slots.filter((s) => Number(s.time.slice(0, 2)) >= 13 && Number(s.time.slice(0, 2)) < 17);
+  const eveSlots = slots.filter((s) => Number(s.time.slice(0, 2)) >= 17);
+  const weeks = Math.ceil(days.length / 7);
+  const visibleDays = days.slice(week * 7, week * 7 + 7);
+  const doctorName = doctor?.name ?? "First available dentist";
 
+  const chooseDoctor = (id: string) => { setDoctorId(id); setSelectedTime(null); };
 
   const handleSubmit = async () => {
     const n = validateName(name);
     const p = validatePhone(phone);
     setNameErr(n.ok ? "" : (n as Extract<FieldResult, { ok: false }>).message);
     setPhoneErr(p.ok ? "" : (p as Extract<FieldResult, { ok: false }>).message);
-    if (!n.ok || !p.ok || !activeDate || !selectedTime) return;
+    if (!n.ok || !p.ok || !activeDate || !selectedTime || !timeOk) return;
     setSubmitting(true);
     setSubmitError("");
     try {
       const req: AppointmentRequest = {
-        serviceId, serviceName, date: activeDate, time: selectedTime,
+        serviceId, serviceName, doctorId, doctorName, date: activeDate, time: selectedTime,
         name: n.value, phone: p.value, note: note.trim() || undefined,
       };
-      const result = await submitAppointment(req);
-      setReceipt(result);
+      setReceipt(await submitAppointment(req));
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Something went wrong.");
+      setSubmitError(err instanceof Error ? err.message : "Something went wrong. Try again, or call us.");
     } finally { setSubmitting(false); }
   };
 
-  const waMsg = receipt
-    ? `Hi, I'd like to book an appointment.\n\nService: ${receipt.request.serviceName}\nDate: ${formatDateLong(receipt.request.date)}\nTime: ${formatTime(receipt.request.time)}\nName: ${receipt.request.name}\nPhone: ${formatPhone(receipt.request.phone)}${receipt.request.note ? `\nNote: ${receipt.request.note}` : ""}\n\n(Ref: ${receipt.reference})`
-    : `Hi, I'd like to book an appointment at ${clinic.name}.`;
-
-  const resetDemo = () => {
-    clearLocalBookings(); setReceipt(null); setSelectedDate(null); setSelectedTime(null);
-    setServiceId("not-sure"); setName(""); setPhone(""); setNote("");
+  const newBooking = () => {
+    setReceipt(null); setSelectedDate(null); setSelectedTime(null); setNote("");
   };
 
   if (!now) {
     return (
       <section id="book" aria-labelledby="book-title" className="section-pad border-t border-line-soft">
-        <div className="wrap"><p className="text-muted">Loading booking form…</p></div>
+        <div className="wrap"><p className="text-muted">Loading the booking calendar…</p></div>
       </section>
     );
   }
 
   if (receipt) {
+    const r = receipt.request;
+    const doc = doctorById(r.doctorId);
+    const waMsg = `Hello ${clinic.name}, I have just booked ${r.serviceName} with ${r.doctorName} on ${formatDateLong(r.date)} at ${formatTime(r.time)}. Reference ${receipt.reference}. Name: ${r.name}.`;
     return (
       <section id="book" aria-labelledby="book-title" className="section-pad border-t border-line-soft">
         <div className="wrap">
-          <div className="mx-auto max-w-[44rem] rounded-2xl border border-line bg-surface p-8 shadow-lift sm:p-10">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-line-soft">
-              <Icon name="check" className="h-7 w-7 text-accent" />
+          <m.div
+            initial={reduce ? false : { opacity: 0, y: 16, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 26 }}
+            className="mx-auto max-w-[46rem] overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-panel"
+            role="status"
+          >
+            <div className="flex items-center gap-5 bg-night p-7 text-on-night sm:p-9">
+              {doc ? (
+                <img src={doc.photo} alt="" className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-on-night/30" />
+              ) : (
+                <LogoMark className="h-16 w-16 shrink-0 text-on-night" />
+              )}
+              <div>
+                <p className="text-sm text-on-night-muted">Appointment booked</p>
+                <h2 id="book-title" className="mt-1 text-[clamp(1.6rem,1.2rem+1.6vw,2.3rem)] text-on-night">
+                  See you {r.date === now.iso ? "today" : relativeDayLabel(r.date, now.iso) === "Tomorrow" ? "tomorrow" : `on ${formatDateLong(r.date).split(",")[0]}`}, {r.name.split(" ")[0]}.
+                </h2>
+              </div>
             </div>
-            <h3 className="h-card mt-5">Request noted</h3>
-            <p className="mt-3 max-w-[28rem] text-muted">
-              This is a demo booking: nothing has been sent yet. Once the clinic&apos;s booking system is connected, requests will go straight to the front desk.
-            </p>
-            <dl className="mt-6 grid gap-3 text-sm">
-              <div className="flex gap-2"><dt className="font-semibold">Service:</dt><dd className="text-muted">{receipt.request.serviceName}</dd></div>
-              <div className="flex gap-2"><dt className="font-semibold">Date:</dt><dd className="text-muted">{formatDateLong(receipt.request.date)}</dd></div>
-              <div className="flex gap-2"><dt className="font-semibold">Time:</dt><dd className="text-muted">{formatTime(receipt.request.time)}</dd></div>
-              <div className="flex gap-2"><dt className="font-semibold">Name:</dt><dd className="text-muted">{receipt.request.name}</dd></div>
-              <div className="flex gap-2"><dt className="font-semibold">Ref:</dt><dd className="text-muted">{receipt.reference}</dd></div>
+            <dl className="grid gap-px bg-line-soft sm:grid-cols-2">
+              {[
+                ["Reference", receipt.reference],
+                ["Dentist", r.doctorName],
+                ["Treatment", r.serviceName],
+                ["When", `${formatDateLong(r.date)}, ${formatTime(r.time)}`],
+              ].map(([k, v]) => (
+                <div key={k} className="bg-surface px-7 py-5">
+                  <dt className="text-sm text-muted">{k}</dt>
+                  <dd className={cn("mt-1 font-semibold text-ink", k === "Reference" && "font-display text-2xl tracking-wide text-brand")}>{v}</dd>
+                </div>
+              ))}
             </dl>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {whatsappUrl(waMsg) && <Button href={whatsappUrl(waMsg)!} icon="whatsapp">Send on WhatsApp</Button>}
-              <Button variant="quiet" onClick={resetDemo}>New booking</Button>
+            <div className="flex flex-wrap items-center gap-3 border-t border-line-soft p-7">
+              {whatsappUrl(waMsg) && <Button href={whatsappUrl(waMsg)!} icon="whatsapp">Confirm on WhatsApp</Button>}
+              <a href={icsHref(receipt)} download={`${receipt.reference}.ics`} className="btn btn-quiet">
+                <Icon name="calendar" className="h-[1.1rem] w-[1.1rem]" />
+                <span>Add to calendar</span>
+              </a>
+              <button type="button" onClick={newBooking} className="link ml-auto text-sm">Book another appointment</button>
             </div>
-          </div>
+            <p className="px-7 pb-7 text-sm text-muted">
+              {addressOneLine}. Arrive ten minutes early for a first visit and bring your insurance card.
+            </p>
+          </m.div>
         </div>
       </section>
     );
   }
 
-  // Week view: show 7 days at a time starting from first available
-  const visibleDays = days.slice(0, 7);
-
   return (
     <section id="book" aria-labelledby="book-title" className="section-pad border-t border-line-soft">
       <div className="wrap">
-        <div className="mx-auto max-w-[66rem]">
-          <div className="text-center">
-            <h2 id="book-title" className="h-section">Book an appointment.</h2>
-            <p className="lede mx-auto mt-4">
-              Pick a day and time. The clinic will call to confirm. The clinic is closed on Sundays.
-            </p>
+        <div className="mx-auto max-w-[68rem]">
+          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+            <div>
+              <h2 id="book-title" className="h-section">Book an appointment</h2>
+              <p className="lede mt-3">Choose a dentist, a day and a time. Your booking reference appears straight away.</p>
+            </div>
+            <p className="text-sm text-muted">{clinic.hours.displayDays}, {clinic.hours.displayTime}</p>
           </div>
 
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-10 overflow-hidden rounded-2xl border border-line bg-surface shadow-panel"
-          >
+          <div className="mt-10 overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-panel">
+            {/* Dentist */}
+            <fieldset className="border-b border-line p-5 sm:p-7">
+              <legend className="float-left mb-4 w-full text-sm font-semibold text-ink">Who would you like to see?</legend>
+              <div role="radiogroup" aria-label="Dentist" className="no-scrollbar clear-both flex gap-2.5 overflow-x-auto pb-1">
+                {[{ id: "any", name: "First available", sub: "Fastest appointment" }, ...team.map((d) => ({ id: d.id, name: d.name, sub: d.specialty }))].map((opt) => {
+                  const d = doctorById(opt.id);
+                  const on = doctorId === opt.id;
+                  const treats = d && serviceId !== "consultation" && d.treatments.includes(serviceId);
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => chooseDoctor(opt.id)}
+                      className={cn(
+                        "relative flex min-w-[13.5rem] shrink-0 items-center gap-3 rounded-2xl border p-2.5 pr-4 text-left transition-[border-color,background-color,box-shadow] duration-200",
+                        on ? "border-brand bg-brand-soft shadow-[0_0_0_1px_var(--color-brand)]" : "border-line hover:border-ink-soft",
+                      )}
+                    >
+                      {d ? (
+                        <img src={d.photo} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover" />
+                      ) : (
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-mint"><LogoMark className="h-7 w-7" /></span>
+                      )}
+                      <span className="min-w-0">
+                        <span className="block truncate text-[0.95rem] font-semibold text-ink">{opt.name}</span>
+                        <span className="block truncate text-[0.8rem] text-muted">{opt.sub}</span>
+                      </span>
+                      {treats && <span className="absolute -top-2 right-3 rounded-full bg-brand px-2 py-0.5 text-[0.68rem] font-semibold text-on-brand">Treats this</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
             {/* Week strip */}
-            <div className="no-scrollbar flex overflow-x-auto border-b border-line">
-              {visibleDays.map((d) => {
-                const active = d.iso === activeDate;
-                const disabled = d.status !== "open";
-                return (
-                  <button
-                    key={d.iso}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => { setSelectedDate(d.iso); setSelectedTime(null); }}
-                    className={cn(
-                      "flex min-w-[5.5rem] flex-1 flex-col items-center gap-1 py-4 text-center transition-colors",
-                      active && "bg-ink text-paper",
-                      !active && !disabled && "text-ink hover:bg-ice",
-                      disabled && "cursor-not-allowed text-mist",
-                    )}
-                  >
-                    <span className="text-[0.7rem] font-bold uppercase tracking-wider">
-                      {weekdayShort(d.iso)}
-                    </span>
-                    <span className="text-2xl font-bold leading-tight">{d.day}</span>
-                    <span className={cn("text-[0.65rem]", active ? "text-paper/70" : "text-muted")}>
-                      {monthLabel(d.iso).split(" ")[0].slice(0, 4)}
-                    </span>
-                    {d.status === "full" && <span className="mt-0.5 text-[0.62rem] font-bold text-danger">Full</span>}
-                    {d.status === "closed" && <span className="mt-0.5 text-[0.62rem] font-semibold">Closed</span>}
-                  </button>
-                );
-              })}
+            <div className="flex items-stretch border-b border-line">
+              <button type="button" onClick={() => setWeek((w) => Math.max(0, w - 1))} disabled={week === 0} aria-label="Previous week" className="grid w-11 shrink-0 place-items-center text-ink disabled:text-line hover:bg-mint/60">
+                <Icon name="chevron-left" className="h-4 w-4" />
+              </button>
+              <div className="no-scrollbar flex flex-1 overflow-x-auto">
+                {visibleDays.map((d) => {
+                  const active = d.iso === activeDate;
+                  const disabled = d.status !== "open";
+                  return (
+                    <button
+                      key={d.iso}
+                      type="button"
+                      disabled={disabled}
+                      aria-pressed={active}
+                      aria-label={`${formatDateLong(d.iso)}${d.status === "closed" ? ", not available" : d.status === "full" ? ", fully booked" : ""}`}
+                      onClick={() => { setSelectedDate(d.iso); setSelectedTime(null); }}
+                      className={cn(
+                        "relative flex min-w-[4.9rem] flex-1 flex-col items-center gap-0.5 py-4 text-center transition-colors",
+                        active && "bg-ink text-paper",
+                        !active && !disabled && "text-ink hover:bg-mint/60",
+                        disabled && "cursor-not-allowed text-mist",
+                      )}
+                    >
+                      <span className="text-[0.75rem] font-medium">{d.isToday ? "Today" : weekdayShort(d.iso)}</span>
+                      <span className="font-display text-[1.65rem] leading-tight">{d.day}</span>
+                      <span className={cn("text-[0.7rem]", active ? "text-paper/70" : "text-muted")}>
+                        {d.status === "closed" ? (doctor && !doctor.clinicDays.includes(d.weekday) && clinic.hours.openWeekdays.includes(d.weekday) ? "Off" : "Closed") : d.status === "full" ? "Full" : monthLabel(d.iso).split(" ")[0].slice(0, 3)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <button type="button" onClick={() => setWeek((w) => Math.min(weeks - 1, w + 1))} disabled={week >= weeks - 1} aria-label="Next week" className="grid w-11 shrink-0 place-items-center text-ink disabled:text-line hover:bg-mint/60">
+                <Icon name="chevron-right" className="h-4 w-4" />
+              </button>
             </div>
 
-            {/* Body: slots left, form right */}
-            <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
               {/* Slots */}
-              <div className="border-b border-line p-6 lg:border-r lg:border-b-0 lg:p-8">
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-sans text-sm font-bold tracking-normal text-ink">Available time slots</h3>
-                  {activeDate && (
-                    <span className="text-sm font-semibold text-accent">
-                      {formatDateLong(activeDate).replace(/,\s\d{4}$/, "")}
-                    </span>
-                  )}
+              <div className="border-b border-line p-5 sm:p-7 lg:border-r lg:border-b-0">
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-sans text-sm font-semibold tracking-normal text-ink">
+                    {doctor ? `Free times with ${doctor.name.split(" ").slice(0, 2).join(" ")}` : "Free times"}
+                  </h3>
+                  {activeDate && <span className="text-sm text-brand">{formatDateLong(activeDate).replace(/,?\s\d{4}$/, "")}</span>}
                 </div>
 
-                {[{ label: "Morning", sl: mornSlots }, { label: "Afternoon", sl: eveSlots }].map(({ label, sl }) =>
+                {slots.length === 0 && <p className="mt-6 text-muted">No times left on this day. Pick another day above.</p>}
+                {[{ label: "Morning", sl: mornSlots }, { label: "Afternoon", sl: dayslots }, { label: "Evening", sl: eveSlots }].map(({ label, sl }) =>
                   sl.length > 0 ? (
                     <div key={label} className="mt-5">
-                      <div className="grid grid-cols-2 gap-2">
+                      <p className="mb-2 text-[0.8rem] text-muted">{label}</p>
+                      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                         {sl.map((slot) => {
-                          const taken = slot.status === "booked" || slot.status === "past" || slot.status === "requested";
+                          const taken = slot.status !== "available";
                           const active = slot.time === selectedTime;
                           return (
                             <button
                               key={slot.time}
                               type="button"
                               disabled={taken}
+                              aria-pressed={active}
                               onClick={() => setSelectedTime(slot.time)}
                               className={cn(
-                                "flex items-center justify-between rounded-lg border px-4 py-3 text-sm font-semibold transition-all",
-                                taken && "cursor-not-allowed border-line-soft bg-paper text-mist",
-                                active && !taken && "border-ink bg-ink text-paper shadow-sm",
-                                !active && !taken && "border-line bg-surface text-ink hover:border-ink-soft",
+                                "rounded-xl border py-2.5 text-[0.9rem] font-medium tabular-nums transition-[background-color,border-color,color,transform] duration-150 active:scale-[0.97]",
+                                taken && "cursor-not-allowed border-transparent bg-paper text-mist line-through decoration-mist/60",
+                                active && !taken && "border-brand bg-brand text-on-brand",
+                                !active && !taken && "border-line bg-surface text-ink hover:border-brand",
                               )}
                             >
-                              <span>{formatTime(slot.time)}</span>
-                              {taken && <span className="text-[0.65rem] uppercase text-mist">Booked</span>}
-                              {active && !taken && <span className="text-[0.65rem] uppercase text-paper/75">Selected</span>}
-                              {!taken && !active && <span className="text-[0.65rem] uppercase text-accent">Open</span>}
+                              {formatTime(slot.time).replace(":00", "")}
+                              {taken && <span className="sr-only"> (booked)</span>}
                             </button>
                           );
                         })}
@@ -217,100 +317,67 @@ export function BookingForm() {
                     </div>
                   ) : null,
                 )}
-
-                <p className="mt-5 flex items-start gap-2 text-[0.8rem] text-muted">
-                  <Icon name="check" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
-                  Demo schedule. Slots marked &ldquo;Open&rdquo; can be requested immediately. Final confirmation is sent by the clinic team.
-                </p>
               </div>
 
-              {/* Contact form */}
-              <div className="p-6 lg:p-8">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="book-name" className="text-sm font-semibold text-ink">Full Name *</label>
-                    <input
-                      id="book-name" type="text" autoComplete="name"
-                      value={name} onChange={(e) => { setName(e.target.value); setNameErr(""); }}
-                      aria-invalid={!!nameErr} className="field mt-1.5" placeholder="e.g. Rahul Sharma"
-                    />
-                    {nameErr && <p className="mt-1 text-xs text-danger">{nameErr}</p>}
-                  </div>
-                  <div>
-                    <label htmlFor="book-phone" className="text-sm font-semibold text-ink">Contact Phone *</label>
-                    <input
-                      id="book-phone" type="tel" inputMode="tel" autoComplete="tel"
-                      value={phone} onChange={(e) => { setPhone(e.target.value); setPhoneErr(""); }}
-                      aria-invalid={!!phoneErr} className="field mt-1.5" placeholder="10-digit mobile number"
-                    />
-                    {phoneErr && <p className="mt-1 text-xs text-danger">{phoneErr}</p>}
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label htmlFor="book-service" className="text-sm font-semibold text-ink">Reason for Visit</label>
-                  <select
-                    id="book-service"
-                    value={serviceId}
-                    onChange={(e) => setServiceId(e.target.value)}
-                    className="field mt-1.5"
-                  >
+              {/* Details */}
+              <div className="p-5 sm:p-7">
+                <div>
+                  <label htmlFor="book-service" className="text-sm font-semibold text-ink">Treatment</label>
+                  <select id="book-service" value={serviceId} onChange={(e) => setServiceId(e.target.value)} className="field mt-1.5">
                     {serviceOptions.map((s) => (
-                      <option key={s.id} value={s.id}>{s.name === "Not sure yet" ? "General Consultation & Check-up" : s.name}</option>
+                      <option key={s.id} value={s.id}>{s.id === "consultation" ? "Consultation and check-up" : s.name}</option>
                     ))}
                   </select>
                 </div>
-
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="book-name" className="text-sm font-semibold text-ink">Full name</label>
+                    <input
+                      id="book-name" type="text" autoComplete="name"
+                      value={name} onChange={(e) => { setName(e.target.value); setNameErr(""); }}
+                      aria-invalid={!!nameErr} aria-describedby={nameErr ? "book-name-err" : undefined} className="field mt-1.5"
+                    />
+                    {nameErr && <p id="book-name-err" className="mt-1 text-xs text-danger">{nameErr}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="book-phone" className="text-sm font-semibold text-ink">Mobile number</label>
+                    <input
+                      id="book-phone" type="tel" inputMode="tel" autoComplete="tel"
+                      value={phone} onChange={(e) => { setPhone(e.target.value); setPhoneErr(""); }}
+                      aria-invalid={!!phoneErr} aria-describedby={phoneErr ? "book-phone-err" : undefined} className="field mt-1.5" placeholder="+971 50 123 4567"
+                    />
+                    {phoneErr && <p id="book-phone-err" className="mt-1 text-xs text-danger">{phoneErr}</p>}
+                  </div>
+                </div>
                 <div className="mt-4">
                   <label htmlFor="book-note" className="text-sm font-semibold text-ink">
-                    Additional Clinical Notes <span className="font-normal text-muted">(Optional)</span>
+                    Anything we should know? <span className="font-normal text-muted">(optional)</span>
                   </label>
                   <textarea
-                    id="book-note" value={note} onChange={(e) => setNote(e.target.value)}
-                    className="field mt-1.5" rows={3}
-                    placeholder="Any existing dental symptoms or medical history you'd like the dentist to know?"
+                    id="book-note" value={note} onChange={(e) => setNote(e.target.value)} className="field mt-1.5" rows={3}
+                    placeholder="Pain, sensitivity, nervous about treatment, insurance provider…"
                   />
                 </div>
 
-                {submitError && <p className="mt-3 rounded-md bg-danger-soft p-3 text-sm text-danger">{submitError}</p>}
+                {submitError && <p role="alert" className="mt-3 rounded-md bg-danger-soft p-3 text-sm text-danger">{submitError}</p>}
 
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  disabled={submitting || !selectedTime}
+                  disabled={submitting || !timeOk}
                   className={cn(
-                    "mt-6 flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-bold transition-all",
-                    !selectedTime
-                      ? "cursor-not-allowed border border-line bg-line-soft text-muted"
-                      : "bg-ink text-paper hover:bg-ink-soft",
+                    "mt-6 flex w-full items-center justify-center gap-2 rounded-full py-4 text-base font-semibold transition-[background-color,transform] duration-150 active:scale-[0.98]",
+                    !timeOk ? "cursor-not-allowed border border-line bg-line-soft text-muted" : "bg-ink text-paper hover:bg-brand-strong",
                   )}
                 >
-                  {submitting ? "Sending…" : selectedTime ? `Request ${formatTime(selectedTime)} appointment` : "Choose a time slot first"}
-                  {!submitting && <Icon name="arrow-up-right" className="h-4 w-4" />}
+                  {submitting ? "Booking…" : timeOk ? `Book ${formatTime(selectedTime!)}${doctor ? ` with ${doctor.name.split(" ").slice(0, 2).join(" ")}` : ""}` : "Choose a time first"}
                 </button>
-
-                {telUrl && clinic.phone && (
-
-                  <p className="mt-4 text-center text-sm text-muted">
-
-                    Need an urgent appointment? Call 
-
-                    <a href={telUrl} className="font-bold text-ink underline underline-offset-4">{clinic.phone.display}</a>
-
-                  </p>
-
-                )}
+                <p className="mt-4 text-center text-sm text-muted">
+                  In pain today? Call <a href={telUrl} className="font-semibold text-ink underline underline-offset-4">{clinic.phone.display}</a>
+                </p>
               </div>
             </div>
-          </m.div>
-
-          {local.length > 0 && (
-            <div className="mt-6 text-center">
-              <button type="button" onClick={resetDemo} className="text-sm font-semibold text-muted underline underline-offset-4 hover:text-ink">
-                Reset demo data ({local.length} {local.length === 1 ? "booking" : "bookings"})
-              </button>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </section>

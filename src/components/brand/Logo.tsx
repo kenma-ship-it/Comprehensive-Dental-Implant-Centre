@@ -1,17 +1,15 @@
 import { cn } from "@/lib/cn";
+import { clinic } from "@/data/clinic";
 import { LogoMark } from "./LogoMark";
 
-/** Two-line wordmark, as on the clinic's signage. */
+/** Serif wordmark: the clinic name, then "Dental" set in italic. */
 export function Wordmark({ className, size = "sm" }: { className?: string; size?: "sm" | "lg" }) {
   const lg = size === "lg";
+  const [first, ...rest] = clinic.name.split(" ");
   return (
-    <span className={cn("inline-flex flex-col leading-none", className)} aria-label="Comprehensive Dental and Implant Centre">
-      <span aria-hidden="true" className={cn("font-display font-semibold tracking-[-0.02em] text-ink", lg ? "text-[clamp(2rem,1.2rem+3.4vw,3.4rem)]" : "text-[1.02rem]")}>
-        Comprehensive Dental
-      </span>
-      <span aria-hidden="true" className={cn("font-semibold uppercase text-brand", lg ? "mt-2 text-[clamp(0.85rem,0.6rem+0.9vw,1.1rem)] tracking-[0.22em]" : "mt-1 text-[0.58rem] tracking-[0.2em]")}>
-        &amp; Implant Centre
-      </span>
+    <span className={cn("inline-flex items-baseline gap-[0.3em] font-display leading-none text-ink", lg ? "text-[clamp(2rem,1.2rem+3.4vw,3.4rem)]" : "text-[1.42rem]", className)} aria-label={clinic.name}>
+      <span aria-hidden="true" className="font-medium tracking-[-0.02em]">{first}</span>
+      {rest.length > 0 && <span aria-hidden="true" className="italic text-brand">{rest.join(" ")}</span>}
     </span>
   );
 }
@@ -19,10 +17,8 @@ export function Wordmark({ className, size = "sm" }: { className?: string; size?
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex min-w-0 items-center gap-2.5", className)}>
-      <LogoMark className="h-10 w-auto shrink-0" />
-      {/* Below 380px the badge carries the brand on its own; the wordmark would
-          push the phone and menu buttons off-screen. */}
-      <Wordmark className="hidden min-[380px]:flex" />
+      <LogoMark className="h-9 w-auto shrink-0" />
+      <Wordmark className="hidden min-[360px]:inline-flex" />
     </span>
   );
 }

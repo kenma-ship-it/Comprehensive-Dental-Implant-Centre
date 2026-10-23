@@ -26,8 +26,11 @@ export type AppointmentRequest = {
   date: string;
   /** HH:mm, 24-hour */
   time: string;
+  /** Chosen dentist, or "any" for the first available */
+  doctorId: string;
+  doctorName: string;
   name: string;
-  /** 10 digits, no country code */
+  /** + and digits, with country code */
   phone: string;
   note?: string;
 };
@@ -38,7 +41,7 @@ export type AppointmentReceipt = {
   request: AppointmentRequest;
 };
 
-const STORAGE_KEY = "cdic.demo.bookings.v1";
+const STORAGE_KEY = "pearlstone.bookings.v1";
 export const BOOKINGS_EVENT = "cdic:bookings";
 
 export function readLocalBookings(): StoredBooking[] {
@@ -78,13 +81,13 @@ export async function submitAppointment(request: AppointmentRequest): Promise<Ap
   await new Promise((resolve) => setTimeout(resolve, 650)); // pretend network round trip
 
   const existing = readLocalBookings();
-  if (existing.some((b) => b.date === request.date && b.time === request.time)) {
+  if (existing.some((b) => b.date === request.date && b.time === request.time && (request.doctorId === "any" || !b.doctorId || b.doctorId === request.doctorId))) {
     throw new Error("That slot was just taken. Please pick another time.");
   }
-  writeLocalBookings([...existing, { date: request.date, time: request.time, serviceId: request.serviceId }]);
+  writeLocalBookings([...existing, { date: request.date, time: request.time, serviceId: request.serviceId, doctorId: request.doctorId }]);
 
   return {
-    reference: `DEMO-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+    reference: `PS-${Date.now().toString(36).toUpperCase().slice(-6)}`,
     createdAt: new Date().toISOString(),
     request,
   };

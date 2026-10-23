@@ -6,7 +6,7 @@ import { Cta } from "@/components/sections/Cta";
 export const metadata: Metadata = {
   title: "Our dentists",
   description:
-    "Four specialist dentists at Comprehensive Dental & Implant Centre, Bangalore: oral surgery and implants, root canals, and orthodontics. See each dentist's education, specialties and treatments.",
+    "Four specialist dentists: prosthodontics and implants, oral surgery, orthodontics and endodontics. See each dentist's education, career, languages and the treatments they take.",
   alternates: { canonical: "/dentists" },
 };
 

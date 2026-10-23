@@ -2,7 +2,7 @@
  * Lets any button on the page ("Book this service", a slot in the hero) hand a choice
  * to the booking form without prop-drilling or a global store.
  */
-export type BookingPrefill = { serviceId?: string; date?: string; time?: string };
+export type BookingPrefill = { serviceId?: string; doctorId?: string; date?: string; time?: string };
 
 export const PREFILL_EVENT = "cdic:prefill";
 

@@ -1,33 +1,29 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
-import { team, initials } from "@/data/team";
+import { team } from "@/data/team";
 import { cn } from "@/lib/cn";
 
-/** Portraits are the clinic's to supply; until then each card carries the dentist's initials. Each card opens the profile. */
+/** Portrait cards; each opens the dentist's profile. */
 export function TeamGrid({ className }: { className?: string }) {
   return (
-    <ul className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+    <ul className={cn("grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {team.map((d) => (
         <li key={d.id} className="min-w-0">
-          <Link
-            href={`/dentists/${d.id}`}
-            className="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-surface p-6 transition-colors hover:border-brand"
-          >
-            <div className="flex aspect-[4/3] items-center justify-center rounded-[1rem] bg-mint transition-colors group-hover:bg-brand">
-              <span aria-hidden="true" className="font-display text-[3.2rem] font-semibold text-brand/70 transition-colors group-hover:text-on-night">
-                {initials(d.name)}
-              </span>
+          <Link href={`/dentists/${d.id}`} className="group block">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-mint">
+              <img
+                src={d.photo}
+                alt={`Portrait of ${d.name}`}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.04]"
+              />
+              {d.lead && <span className="absolute top-4 left-4 rounded-full bg-surface/90 px-3 py-1 text-[0.75rem] font-semibold text-ink backdrop-blur">Founder</span>}
             </div>
-            <h3 className="mt-5 font-display text-[1.2rem] font-semibold leading-tight text-ink">{d.name}</h3>
-            {d.lead && <p className="mt-1.5 text-[0.78rem] font-bold uppercase tracking-[0.12em] text-brand">Lead dentist</p>}
+            <h3 className="mt-5 text-[1.5rem] leading-tight text-ink">{d.name}</h3>
+            <p className="mt-1 text-[0.95rem] text-brand">{d.title}</p>
             <p className="mt-2 text-[0.92rem] text-muted">{d.focus}</p>
-            <ul className="mt-3 flex flex-wrap gap-1.5 text-[0.8rem] text-ink-soft">
-              {d.credentials.slice(0, 3).map((c) => (
-                <li key={c} className="rounded-full border border-line px-2.5 py-0.5">{c}</li>
-              ))}
-            </ul>
-            <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[0.92rem] font-semibold text-brand">
-              View profile <Icon name="arrow-right" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <span className="mt-3 inline-flex items-center gap-1.5 text-[0.92rem] font-semibold text-ink">
+              Profile and education <Icon name="arrow-right" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
           </Link>
         </li>

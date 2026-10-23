@@ -1,19 +1,19 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { getIstNow, type IstNow } from "@/lib/time";
+import { getClinicNow, type ClinicNow } from "@/lib/time";
 
 /**
  * One shared clock for the whole page (hero status, booking calendar, sticky bar).
  * Returns null on the server and during hydration so markup always matches,
- * then the current IST time once mounted. Updates when the minute changes.
+ * then the clinic's current time once mounted. Updates when the minute changes.
  */
-let snapshot: IstNow | null = null;
+let snapshot: ClinicNow | null = null;
 const listeners = new Set<() => void>();
 let timer: ReturnType<typeof setInterval> | undefined;
 
 function tick() {
-  const next = getIstNow();
+  const next = getClinicNow();
   if (!snapshot || next.iso !== snapshot.iso || next.minutes !== snapshot.minutes) {
     snapshot = next;
     listeners.forEach((listener) => listener());
@@ -32,6 +32,6 @@ function subscribe(listener: () => void) {
   };
 }
 
-export function useIstNow(): IstNow | null {
+export function useClinicNow(): ClinicNow | null {
   return useSyncExternalStore(subscribe, () => snapshot, () => null);
 }

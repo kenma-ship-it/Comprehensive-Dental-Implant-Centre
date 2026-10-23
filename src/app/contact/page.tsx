@@ -7,7 +7,7 @@ import { clinic } from "@/data/clinic";
 
 export const metadata: Metadata = {
   title: "Contact & appointments",
-  description: `Book an appointment at Comprehensive Dental & Implant Centre, Cornwell Road, Langford Garden, Bangalore 560025. Call ${clinic.phone.display}. Open ${clinic.hours.displayShort}, ${clinic.hours.displayTime}.`,
+  description: `Book an appointment at ${clinic.name}, ${clinic.address.line1}, ${clinic.address.line2}, ${clinic.address.city}. Call ${clinic.phone.display}. Open ${clinic.hours.displayShort}, ${clinic.hours.displayTime}.`,
   alternates: { canonical: "/contact" },
 };
 

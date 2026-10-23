@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const service = services.find((s) => s.slug === slug);
   if (!service) return {};
   return {
-    title: `${service.name} in Bangalore`,
-    description: `${service.summary} At Comprehensive Dental & Implant Centre, Cornwell Road, Richmond Circle, Bangalore.`,
+    title: `${service.name} in ${clinic.address.city}`,
+    description: `${service.summary} At ${clinic.name}, ${clinic.address.line2}, ${clinic.address.city}.`,
     alternates: { canonical: `/services/${service.slug}` },
   };
 }
@@ -62,7 +62,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
               <div className="mb-8 overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface shadow-lift">
                 <img
                   src={service.image}
-                  alt={`${service.name} procedure at Comprehensive Dental & Implant Centre Bangalore`}
+                  alt={`${service.name} at ${clinic.name}`}
                   className="aspect-[16/9] w-full object-cover"
                 />
               </div>
