@@ -17,6 +17,8 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · M
 | --- | --- |
 | `/` | Hero, the five stages of a visit, featured treatments, the dentists, reviews |
 | `/about` | How the clinic works, and all four dentists with credentials |
+| `/dentists` | The four dentists, each card opening a profile |
+| `/dentists/[id]` | One page per dentist (4 static pages): about, education, where they work, treatments they take, `Dentist` schema |
 | `/services` | All 15 treatments |
 | `/services/[slug]` | One page per treatment (15 static pages), each with its own `MedicalProcedure` schema |
 | `/contact` | Appointment enquiry, FAQs, hours, map |
@@ -31,7 +33,7 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · M
 ## SEO and AI answer engines
 
 - `Dentist` JSON-LD with address, hours, all four dentists, every treatment and the published reviews; `FAQPage` on top; `MedicalProcedure` per treatment page.
-- Per-page titles, descriptions and canonicals; sitemap covers all 20 routes; `robots.ts` allows AI crawlers deliberately so the clinic can be cited in AI answers about dentists near Richmond Circle.
+- Per-page titles, descriptions and canonicals; sitemap covers all 25 routes; `robots.ts` allows AI crawlers deliberately so the clinic can be cited in AI answers about dentists near Richmond Circle.
 - Each treatment page answers the questions a patient actually asks, in short self-contained paragraphs — the shape answer engines quote.
 
 ## Verification
@@ -50,6 +52,7 @@ node scripts/check-a11y.mjs
 2. **Map pin** — the embed searches by address. Paste the clinic's own Google Maps place link into `clinic.maps` for an exact pin.
 3. **Photos** — no clinic, team or patient photography is used. Supply real photos; do not substitute stock images of other people's clinics.
 4. **Booking** — the calendar is a demo (sample availability held in the browser). Replace `submitAppointment` in `src/lib/appointments.ts` with the clinic's real booking system.
-5. **Blog** — the current site has a blog; no posts were supplied, so no `/blog` route was built.
+5. **Dentist profiles**: universities, graduation years and earlier hospitals were not supplied, so the profiles show only what the credentials state. Add `institution` / `year` to `education` and more `practice` entries in `src/data/team.ts` and they appear automatically.
+6. **Blog** — the current site has a blog; no posts were supplied, so no `/blog` route was built.
 
 Facts come from the clinic's own website. Do not add claims (success rates, patient counts, prices, awards) unless the clinic supplies them.

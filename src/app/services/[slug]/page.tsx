@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/sections/PageHeader";
 import { Cta } from "@/components/sections/Cta";
 import { Icon } from "@/components/ui/Icon";
 import { services } from "@/data/services";
+import { team } from "@/data/team";
 import { clinic, SITE_URL } from "@/data/clinic";
 
 export function generateStaticParams() {
@@ -27,6 +28,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   const service = services.find((s) => s.slug === slug);
   if (!service) notFound();
 
+  const dentists = team.filter((d) => d.treatments.includes(service.slug));
   const others = services.filter((s) => s.slug !== service.slug).slice(0, 4);
   const schema = {
     "@context": "https://schema.org",
@@ -83,6 +85,18 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
                   </div>
                 ))}
               </dl>
+              {dentists.length > 0 && (
+                <p className="mt-6 text-[0.95rem] text-muted">
+                  Treated by{" "}
+                  {dentists.map((d, i) => (
+                    <span key={d.id}>
+                      {i > 0 && (i === dentists.length - 1 ? " and " : ", ")}
+                      <Link href={`/dentists/${d.id}`} className="link font-semibold text-ink">{d.name}</Link>
+                    </span>
+                  ))}
+                  .
+                </p>
+              )}
               <Link href="/contact" className="btn btn-primary btn-sm mt-7">
                 Book this treatment
                 <Icon name="arrow-right" className="h-4 w-4" />

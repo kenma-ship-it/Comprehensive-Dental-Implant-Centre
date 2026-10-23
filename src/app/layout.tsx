@@ -72,7 +72,7 @@ function JsonLd() {
       description: s.summary,
       url: `${SITE_URL}/services/${s.slug}`,
     })),
-    employee: team.map((d) => ({ "@type": "Person", name: d.name, hasCredential: d.credentials.join(", ") })),
+    employee: team.map((d) => ({ "@type": "Person", name: d.name, jobTitle: d.title, url: `${SITE_URL}/dentists/${d.id}`, hasCredential: d.credentials.join(", ") })),
     review: reviews.map((r) => ({
       "@type": "Review",
       author: { "@type": "Person", name: r.name },
