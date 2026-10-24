@@ -1,3 +1,4 @@
+export const dynamic = "force-static";
 import { ogSize, renderOgImage } from "@/lib/og";
 
 export const alt = "Pearlstone Dental, Al Maryah Island, Abu Dhabi";

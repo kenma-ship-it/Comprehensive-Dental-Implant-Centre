@@ -10,6 +10,10 @@ npm run build && npm start
 
 Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · Motion · React Bits (BlurText, CountUp) · Newsreader + Instrument Sans.
 
+## Publish
+
+Every push to `main` builds a static export and publishes it to GitHub Pages (`.github/workflows/pages.yml`). In the repo, Settings → Pages → Source must be **GitHub Actions**. To host on a custom domain instead, set `NEXT_PUBLIC_BASE_PATH` to empty in the workflow.
+
 ## Rebrand it for a new client
 
 | What | Where |

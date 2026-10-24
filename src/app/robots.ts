@@ -1,3 +1,4 @@
+export const dynamic = "force-static";
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/data/clinic";
 import { ALLOW_INDEXING } from "@/lib/site";

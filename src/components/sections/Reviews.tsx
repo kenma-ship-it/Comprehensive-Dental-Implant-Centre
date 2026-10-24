@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
 import { StarIcon } from "@/components/ui/Icon";
@@ -137,7 +138,7 @@ export function Reviews() {
               Four of the notes patients left after treatment this year.
             </p>
           </div>
-          <a href="/contact#book" className="btn btn-quiet btn-sm">Book a consultation</a>
+          <Link href="/contact#book" className="btn btn-quiet btn-sm">Book a consultation</Link>
         </div>
       </div>
 
@@ -165,7 +166,7 @@ export function Reviews() {
                 Reviews from patients will appear here.
               </p>
             </div>
-            <a href="/contact#book" className="btn btn-primary">Book a consultation</a>
+            <Link href="/contact#book" className="btn btn-primary">Book a consultation</Link>
           </div>
         </div>
       )}

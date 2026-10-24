@@ -1,3 +1,4 @@
+import { asset } from "@/lib/asset";
 /**
  * The dentists. This is a demo team: names, photos, education and careers are fictional.
  * Replace them with the client's real dentists before going live.
@@ -29,7 +30,7 @@ export const team: Doctor[] = [
   {
     id: "lina-haddad",
     name: "Dr. Lina Haddad",
-    photo: "/images/team/lina-haddad.jpg",
+    photo: asset("/images/team/lina-haddad.jpg"),
     credentials: ["DDS", "MSc Prosthodontics", "Fellow, ICOI"],
     lead: true,
     title: "Founder and lead prosthodontist",
@@ -56,7 +57,7 @@ export const team: Doctor[] = [
   {
     id: "omar-al-suwaidi",
     name: "Dr. Omar Al Suwaidi",
-    photo: "/images/team/omar-al-suwaidi.jpg",
+    photo: asset("/images/team/omar-al-suwaidi.jpg"),
     credentials: ["BDS", "MSc Oral Surgery", "FDS RCS (Eng)"],
     title: "Oral and maxillofacial surgeon",
     specialty: "Oral surgeon",
@@ -82,7 +83,7 @@ export const team: Doctor[] = [
   {
     id: "sarah-whitfield",
     name: "Dr. Sarah Whitfield",
-    photo: "/images/team/sarah-whitfield.jpg",
+    photo: asset("/images/team/sarah-whitfield.jpg"),
     credentials: ["DMD", "Certificate in Orthodontics", "Invisalign Diamond Provider"],
     title: "Orthodontist",
     specialty: "Orthodontist",
@@ -106,7 +107,7 @@ export const team: Doctor[] = [
   {
     id: "karim-nassar",
     name: "Dr. Karim Nassar",
-    photo: "/images/team/karim-nassar.jpg",
+    photo: asset("/images/team/karim-nassar.jpg"),
     credentials: ["BDS", "MClinDent Endodontics"],
     title: "Endodontist and restorative dentist",
     specialty: "Endodontist",

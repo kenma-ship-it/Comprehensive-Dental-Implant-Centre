@@ -1,5 +1,6 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import Link from "next/link";
 import { Icon, type IconName } from "./Icon";
 
 export type ButtonStyleProps = {
@@ -32,6 +33,14 @@ export function Button(props: AnchorProps | ButtonProps) {
   if ("href" in rest && rest.href !== undefined) {
     const { href, target, rel, ...anchor } = rest as AnchorProps;
     const external = /^https?:/.test(href);
+    // Site pages go through Link so they pick up the base path; tel:, mailto: and external URLs stay plain.
+    if (href.startsWith("/")) {
+      return (
+        <Link href={href} className={classes({ variant, size, className })} {...anchor}>
+          {inner}
+        </Link>
+      );
+    }
     return (
       <a
         href={href}

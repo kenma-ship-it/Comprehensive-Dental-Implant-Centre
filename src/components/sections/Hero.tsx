@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { asset } from "@/lib/asset";
 import BlurText from "@/components/reactbits/BlurText";
 import { Button } from "@/components/ui/Button";
 import { clinic } from "@/data/clinic";
@@ -38,7 +39,7 @@ export function Hero() {
 
         <div className="relative min-w-0">
           <div className="relative ml-auto aspect-[4/5] w-full max-w-[34rem] overflow-hidden rounded-[2.25rem] bg-mint">
-            <img src="/images/clinic/suite.jpg" alt="A treatment suite with a dental chair by the window" className="hero-photo h-full w-full object-cover" fetchPriority="high" />
+            <img src={asset("/images/clinic/suite.jpg")} alt="A treatment suite with a dental chair by the window" className="hero-photo h-full w-full object-cover" fetchPriority="high" />
           </div>
           <div className="absolute -bottom-8 left-0 w-[min(21rem,86%)] sm:-left-6 lg:-left-12">
             <NextSlotCard />

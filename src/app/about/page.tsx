@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { asset } from "@/lib/asset";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { TeamGrid } from "@/components/sections/TeamGrid";
 import { Cta } from "@/components/sections/Cta";
@@ -23,7 +24,7 @@ export default function AboutPage() {
       <section aria-labelledby="approach-title" className="py-20 lg:py-28">
         <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-20">
           <figure className="overflow-hidden rounded-[2rem] bg-mint">
-            <img src="/images/clinic/room.jpg" alt="A treatment room with a dental chair and a window onto the city" className="aspect-[4/3] w-full object-cover" loading="lazy" />
+            <img src={asset("/images/clinic/room.jpg")} alt="A treatment room with a dental chair and a window onto the city" className="aspect-[4/3] w-full object-cover" loading="lazy" />
           </figure>
           <div>
             <h2 id="approach-title" className="h-section">How the clinic works</h2>
